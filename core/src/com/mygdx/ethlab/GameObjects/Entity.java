@@ -9,13 +9,19 @@ import com.badlogic.gdx.math.Vector2;
  * Created by Eoin on 04/06/2015.
  */
 public class Entity extends GameObject {
+    public static final float DEFAULT_MASS = 1;
+    public static final float DEFAULT_HEALTH = 1;
+    public static final Rectangle DEFAULT_BOUNDING_BOX = new Rectangle(0, 0, 20, 20);
+
     public Rectangle boundingBox;
     public float mass;
     public float health;
+    public AIType ai;
 
     public Entity() {
-        boundingBox = new Rectangle(0, 0, 20, 20);
-        mass = 0.1f;
-        health = 1;
+        boundingBox = DEFAULT_BOUNDING_BOX;
+        mass = DEFAULT_MASS;
+        health = DEFAULT_HEALTH;
+        ai = AIType.NONE;
     }
 }

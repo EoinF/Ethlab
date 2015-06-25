@@ -12,7 +12,7 @@ public class GameObject {
     public Vector2 position;
 
     public GameObject() {
-        textureName = "default";
+        textureName = null;
         colour = Color.WHITE;
         position = Vector2.Zero;
     }

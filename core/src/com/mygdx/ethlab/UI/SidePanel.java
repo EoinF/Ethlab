@@ -104,7 +104,6 @@ public class SidePanel extends Table {
         createEntityButton.setChecked(true);
 
         createModeTable.add(modeRow)
-                .padTop(5)
                 .expandX()
                 .fillX()
                 .row();

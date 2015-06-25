@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.EthLab;
 import com.mygdx.ethlab.GameObjects.GameObject;
 
 /**
@@ -18,29 +17,48 @@ import com.mygdx.ethlab.GameObjects.GameObject;
  */
 public class ObjectEditor extends Table {
     Config config;
+    private GameObject myObject;
+
     Image textureDisplay;
     Sprite textureSprite;
 
-    final static float DEFAULT_COLOUR_COMPONENT_WIDTH = 42;
-    final static float DEFAULT_COORD_COMPONENT_WIDTH = 70;
+    private static final float DEFAULT_COLOUR_COMPONENT_WIDTH = 42;
+    private static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
+    private static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
+    public static final float DEFAULT_LABEL_WIDTH = 70;
 
     public ObjectEditor(Config config, Skin skin) {
         this.config = config;
-
-        defaults()
-                .padTop(4)
-                .padLeft(5);
-
-        addTexturePicker("Texture: ", config.baseEntityNames[0], config.baseEntityNames, skin);
-        addColourPicker("Colour: ", skin);
-        addCoordinatePicker("Position: ", Vector2.Zero, skin);
+        myObject = new GameObject();
+        init(skin);
     }
 
     public ObjectEditor(Config config, Skin skin, GameObject o) {
         this.config = config;
+        myObject = o;
+        init(skin);
+    }
+
+    /**
+     * Create a control for each property of an object
+     * @param skin The ui texture set to be used
+     */
+    private void init(Skin skin) {
+        defaults()
+                .padTop(4)
+                .padLeft(5);
+
+        addTexturePicker("Texture: ", myObject.textureName, config.baseEntityNames, skin);
+        addColourPicker("Colour: ", myObject.colour, skin);
+        addCoordinatePicker("Position: ", myObject.position, skin);
     }
 
     void addTexturePicker(String attrName, String selectedTexture, String[] textureList, Skin skin) {
+        //Ensure a valid texture is always selected by default
+        if(selectedTexture == null) {
+            selectedTexture = textureList[0];
+        }
+
         TextureRegion tex = config.getEntityTexture(selectedTexture);
         textureSprite = new Sprite(tex);
         textureDisplay = new Image(textureSprite);
@@ -73,19 +91,34 @@ public class ObjectEditor extends Table {
         row();
     }
 
-    void addStringPicker() {
+    void addStringPicker(String attrName, String selectedItem, String[] itemList, Skin skin) {
+        addSelectionRow(attrName, selectedItem, itemList, skin, new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
 
+            }
+        });
     }
 
     void addNumberPicker() {
 
     }
 
-    void addFloatNumberPicker() {
+    void addFloatNumberPicker(String attrName, float defaultNumber, Skin skin) {
+        Table numberPickerTable = new Table();
+        numberPickerTable.align(Align.left);
 
+        Label label = new Label(attrName, skin);
+
+        TextField numberField = new TextField(String.valueOf(defaultNumber), skin);
+
+        numberPickerTable.add(label).width(DEFAULT_LABEL_WIDTH);
+        numberPickerTable.add(numberField).width(DEFAULT_NUMBER_PICKER_WIDTH);
+        add(numberPickerTable).fillX().expandX();
+        row();
     }
 
-    void addColourPicker(String attrName, Skin skin) {
+    void addColourPicker(String attrName, Color defaultColour, Skin skin) {
         Table colourPickerTable = new Table();
         colourPickerTable.align(Align.left);
         colourPickerTable
@@ -93,7 +126,7 @@ public class ObjectEditor extends Table {
                     .padRight(2);
 
         //Create the red component picker
-        TextField redField = new TextField("255", skin);
+        TextField redField = new TextField(String.valueOf((int)(defaultColour.r * 255)), skin);
         redField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField field, char c) {
@@ -106,7 +139,7 @@ public class ObjectEditor extends Table {
         });
         redField.setMaxLength(3);
 
-        TextField greenField = new TextField("255", skin);
+        TextField greenField = new TextField(String.valueOf((int)(defaultColour.g * 255)), skin);
         greenField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField field, char c) {
@@ -119,7 +152,7 @@ public class ObjectEditor extends Table {
         });
         greenField.setMaxLength(3);
 
-        TextField blueField = new TextField("255", skin);
+        TextField blueField = new TextField(String.valueOf((int)(defaultColour.b * 255)), skin);
         blueField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField field, char c) {
@@ -138,13 +171,16 @@ public class ObjectEditor extends Table {
         colourPickerTable.add(redField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
         colourPickerTable.add(greenField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
         colourPickerTable.add(blueField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
-        add(colourPickerTable).fillX().expandX();
+        add(colourPickerTable)
+                .fillX()
+                .expandX();
         row();
     }
 
 
     private void addCoordinatePicker(String attrName, Vector2 defaultCoordinates, Skin skin) {
         Table coordPickerTable = new Table();
+        coordPickerTable.align(Align.left);
         coordPickerTable
                 .defaults()
                     .padRight(2);
@@ -167,7 +203,10 @@ public class ObjectEditor extends Table {
         coordPickerTable.add(label);
         coordPickerTable.add(xField).width(DEFAULT_COORD_COMPONENT_WIDTH);
         coordPickerTable.add(yField).width(DEFAULT_COORD_COMPONENT_WIDTH);
-        add(coordPickerTable).fillX().expandX();
+        add(coordPickerTable)
+                .fillX()
+                .expandX();
+        row();
     }
 
     private void addSelectionRow(String selectTitle, String selectedOption, String[] selectOptions, Skin skin, ChangeListener listener) {
@@ -181,7 +220,7 @@ public class ObjectEditor extends Table {
 
         selectWidget.setSelected(selectedOption);
 
-        selectionRow.add(label);
+        selectionRow.add(label).width(DEFAULT_LABEL_WIDTH);
         selectionRow.add(selectWidget);
 
         add(selectionRow)
