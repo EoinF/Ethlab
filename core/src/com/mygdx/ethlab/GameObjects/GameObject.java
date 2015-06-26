@@ -1,7 +1,9 @@
 package com.mygdx.ethlab.GameObjects;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.ethlab.Config;
 
 /**
  * Created by Eoin on 04/06/2015.

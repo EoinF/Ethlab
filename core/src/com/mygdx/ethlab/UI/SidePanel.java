@@ -6,10 +6,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
@@ -34,7 +35,7 @@ public class SidePanel extends Table {
         //
         //Toolbar control that is always visible
         //
-        Toolbar toolbar = new Toolbar(config.atlas, skin);
+        final Toolbar toolbar = new Toolbar(config.atlas, skin);
         add(toolbar).expandX().fillX();
         row();
 //
@@ -51,73 +52,35 @@ public class SidePanel extends Table {
 
         row();
 
+        Stack modeSelectStack = new Stack();
+
         //
         //Contents of sidebar (Changes based on which mode is selected)
         //
-        Table createModeTable = buildCreateModeTable(config, skin);
-        scrolltable.add(createModeTable).expandX().fillX();
-        //addSidebarContents(scrolltable, atlas);
-    }
+        final CreateModeTable createModeTable = new CreateModeTable(config, skin);
+        final EditModeTable editModeTable = new EditModeTable(config, skin);
+        final TriggerModeTable triggerModeTable = new TriggerModeTable(config, skin);
 
-    void addSidebarContents(Table scrolltable, Config config) {
+        ChangeListener onClickModeButton = new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                createModeTable.setVisible(toolbar.createModeButton.isChecked());
+                editModeTable.setVisible(toolbar.editModeButton.isChecked());
+                triggerModeTable.setVisible(toolbar.triggerModeButton.isChecked());
+            }
+        };
 
-    }
+        modeSelectStack.add(createModeTable);
+        modeSelectStack.add(editModeTable);
+        modeSelectStack.add(triggerModeTable);
 
-    Table buildCreateModeTable(Config config, Skin skin) {
-        Table createModeTable = new Table();
+        toolbar.createModeButton.addListener(onClickModeButton);
+        toolbar.editModeButton.addListener(onClickModeButton);
+        toolbar.triggerModeButton.addListener(onClickModeButton);
 
-        //
-        //Create a button set for choosing the type of object to create
-        //
-        HorizontalGroup modeRow = new HorizontalGroup();
-
-        //Entities (NPCs with AI)
-        SpriteDrawable up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateEntityUp")));
-        SpriteDrawable down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateEntityDown")));
-        Button createEntityButton = new Button(new Button.ButtonStyle(up, down, down));
-        modeRow.addActor(createEntityButton);
-
-        //Props (Inanimate Objects affected by physics)
-        up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreatePropUp")));
-        down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreatePropDown")));
-        Button createPropButton = new Button(new Button.ButtonStyle(up, down, down));
-        modeRow.addActor(createPropButton);
-
-        //Items (Objects that can be picked up or interacted with by Entities)
-        up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateItemUp")));
-        down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateItemDown")));
-        Button createItemButton = new Button(new Button.ButtonStyle(up, down, down));
-        modeRow.addActor(createItemButton);
-
-        //Terrain (Shapes that make up the terrain of the map)
-        up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateTerrainUp")));
-        down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateTerrainDown")));
-        Button createTerrainButton = new Button(new Button.ButtonStyle(up, down, down));
-        modeRow.addActor(createTerrainButton);
-
-        //Create a button group to only allow one button being pressed at a time
-        ButtonGroup<Button> modeSelectGroup = new ButtonGroup<Button>(createEntityButton, createPropButton, createItemButton, createTerrainButton);
-
-        modeSelectGroup.setMaxCheckCount(1);
-        modeSelectGroup.setMinCheckCount(1);
-
-        createEntityButton.setChecked(true);
-
-        createModeTable.add(modeRow)
-                .expandX()
-                .fillX()
-                .row();
-
-        //
-        //Create the table that contains the contents of
-        //
-        EntityEditor editorTable = new EntityEditor(config, skin);
-
-        createModeTable.add(editorTable)
+        scrolltable.add(modeSelectStack)
                 .expandX()
                 .fillX();
-
-        return createModeTable;
     }
 
     public static void setBackgroundColour(Table table, Color colour) {

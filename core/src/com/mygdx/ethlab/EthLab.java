@@ -51,7 +51,7 @@ public class EthLab extends ApplicationAdapter {
 
 		updateCameraInput();
 
-		map.draw(camera);
+		map.draw(camera, config);
 		gameStage.act(delta);
 		uiStage.act(delta);
 

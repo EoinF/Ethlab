@@ -17,7 +17,7 @@ import com.mygdx.ethlab.GameObjects.GameObject;
  */
 public class ObjectEditor extends Table {
     Config config;
-    private GameObject myObject;
+    protected GameObject myObject;
 
     Image textureDisplay;
     Sprite textureSprite;
@@ -48,27 +48,28 @@ public class ObjectEditor extends Table {
                 .padTop(4)
                 .padLeft(5);
 
-        addTexturePicker("Texture: ", myObject.textureName, config.baseEntityNames, skin);
+        addTexturePicker("Texture: ", config.getTextureNames(myObject), skin);
         addColourPicker("Colour: ", myObject.colour, skin);
         addCoordinatePicker("Position: ", myObject.position, skin);
     }
 
-    void addTexturePicker(String attrName, String selectedTexture, String[] textureList, Skin skin) {
+    void addTexturePicker(String attrName, String[] textureList, Skin skin) {
         //Ensure a valid texture is always selected by default
-        if(selectedTexture == null) {
-            selectedTexture = textureList[0];
+        if(myObject.textureName == null) {
+            myObject.textureName = textureList[0];
         }
 
-        TextureRegion tex = config.getEntityTexture(selectedTexture);
+        TextureRegion tex = config.getTexture(myObject);
         textureSprite = new Sprite(tex);
         textureDisplay = new Image(textureSprite);
 
-        addSelectionRow(attrName, selectedTexture, textureList, skin, new ChangeListener() {
+        addSelectionRow(attrName, myObject.textureName, textureList, skin, new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 //Update the texture being displayed, when a new one is selected
                 SelectBox<String> selectWidget = (SelectBox<String>) actor;
-                TextureRegion tex = config.getEntityTexture(selectWidget.getSelected());
+                myObject.textureName = selectWidget.getSelected();
+                TextureRegion tex = config.getTexture(myObject);
                 textureSprite = new Sprite(tex);
                 textureDisplay.setDrawable(new SpriteDrawable(textureSprite));
             }

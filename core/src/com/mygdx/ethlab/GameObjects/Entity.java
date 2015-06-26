@@ -19,6 +19,7 @@ public class Entity extends GameObject {
     public AIType ai;
 
     public Entity() {
+        super();
         boundingBox = DEFAULT_BOUNDING_BOX;
         mass = DEFAULT_MASS;
         health = DEFAULT_HEALTH;

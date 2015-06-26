@@ -3,6 +3,7 @@ package com.mygdx.ethlab;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Json;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 
@@ -12,7 +13,6 @@ import com.mygdx.ethlab.GameObjects.TerrainShape;
 public class Map {
     public TerrainShape shapes[];
     private PolygonSpriteBatch polyBatch;
-
 
     public static Map loadMap(FileHandle file) {
         //Load the map from the given file
@@ -26,11 +26,12 @@ public class Map {
         polyBatch = new PolygonSpriteBatch();
     }
 
-    public void draw(OrthographicCamera camera) {
+    public void draw(OrthographicCamera camera, Config config) {
         polyBatch.setProjectionMatrix(camera.combined);
         for (TerrainShape shape: shapes) {
             polyBatch.begin();
-            shape.getSprite().draw(polyBatch);
+            TextureRegion reg = config.getTexture(shape);
+            shape.getSprite(reg).draw(polyBatch);
             polyBatch.end();
         }
     }

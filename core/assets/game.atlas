@@ -4,35 +4,35 @@ size: 64,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Mick/Idle
+Entity/Mick/Idle
   rotate: false
   xy: 2, 95
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: -1
-Mick/Walk
+Entity/Mick/Walk
   rotate: false
   xy: 2, 95
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: 0
-Mick/Walk
+Entity/Mick/Walk
   rotate: false
   xy: 2, 2
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: 1
-Mick/Walk
+Entity/Mick/Walk
   rotate: false
   xy: 2, 2
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: 3
-Mick/Walk
+Entity/Mick/Walk
   rotate: false
   xy: 32, 95
   size: 28, 91
@@ -45,35 +45,35 @@ size: 64,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-Mickbot/Idle
+Entity/Mickbot/Idle
   rotate: false
   xy: 2, 2
   size: 54, 52
   orig: 54, 52
   offset: 0, 0
   index: -1
-Mickbot/Walk
+Entity/Mickbot/Walk
   rotate: false
   xy: 2, 149
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: 0
-Mickbot/Walk
+Entity/Mickbot/Walk
   rotate: false
   xy: 2, 56
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: 1
-Mickbot/Walk
+Entity/Mickbot/Walk
   rotate: false
   xy: 2, 56
   size: 28, 91
   orig: 28, 91
   offset: 0, 0
   index: 3
-Mickbot/Walk
+Entity/Mickbot/Walk
   rotate: false
   xy: 32, 149
   size: 28, 91

@@ -1,7 +1,7 @@
 {
     "shapes": [
         {
-            "texture": "Bush.png",
+            "textureName": "Bush",
             "points": [
                 50, 55,
                 130, 130,
@@ -12,7 +12,7 @@
             ]
         },
         {
-            "texture": "Bush.png",
+            "textureName": "Bush",
             "points": [
                 300, 480,
                 380, 480,

@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Json;
+import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.GameObjects.TerrainShape;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -53,8 +56,8 @@ public class Config {
             String regionName = atlasRegionList[i].name;
             config.spriteNames[i] = regionName;
             if (regionName.endsWith("/Idle")) {
-                //Record this sprite, but remove the "/Idle" suffix
-                idleSpriteNamesList.add(regionName.substring(0, regionName.length() - 5));
+                //Record this sprite, but remove the "/Idle" suffix and the "Entity/" prefix
+                idleSpriteNamesList.add(regionName.substring(7, regionName.length() - 5));
             }
         }
         config.baseEntityNames = idleSpriteNamesList.toArray(new String[idleSpriteNamesList.size()]);
@@ -85,9 +88,50 @@ public class Config {
         atlas.dispose();
     }
 
-    public Texture getTexture(String name) {
-        return textureMap.get(name);
+    public TextureRegion getTexture(GameObject object) {
+        TextureRegion r;
+
+        String name = object.textureName;
+        String fullname;
+
+        if (object instanceof Entity) {
+            fullname = "Entity/" + name + "/Idle";
+            r = atlas.findRegion(fullname);
+        }
+        else if (object instanceof TerrainShape) {
+            fullname = name;
+            Texture t = textureMap.get(fullname);
+            if (t != null) {
+                t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+                r = new TextureRegion(t);
+            }
+            else {
+                r = null;
+            }
+        }
+        else {
+            fullname = name;
+            r = atlas.findRegion(name);
+        }
+
+        //If no texture was found, make a debug texture to prevent the application from crashing
+        if (r == null) {
+            Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pix.setColor(0xDD0000FF);
+            pix.fill();
+            Gdx.app.error("Resources", "Texture " + fullname + " not found!");
+            r = new TextureRegion(new Texture(pix));
+        }
+        return r;
     }
 
-    public TextureRegion getEntityTexture(String name) { return atlas.findRegion(name + "/Idle");};
+    public String[] getTextureNames(GameObject object) {
+        if (object instanceof Entity) {
+            return baseEntityNames;
+        } else if (object instanceof TerrainShape) {
+            return textureNames;
+        } else {
+            return textureNames;
+        }
+    }
 }

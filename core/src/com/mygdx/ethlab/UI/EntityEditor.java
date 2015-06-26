@@ -1,15 +1,7 @@
 package com.mygdx.ethlab.UI;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.AIType;
@@ -19,18 +11,14 @@ import com.mygdx.ethlab.GameObjects.Entity;
  * Created by Eoin on 04/06/2015.
  */
 public class EntityEditor extends ObjectEditor {
-    private Entity myEntity;
-
     private static final float DEFAULT_BOUNDS_PICKER_WIDTH = 70;
 
     public EntityEditor(Config config, Skin skin) {
-        super(config, skin);
-        myEntity = new Entity();
+        super(config, skin, new Entity());
         init(skin);
     }
     public EntityEditor(Config config, Skin skin, Entity e) {
         super(config, skin, e);
-        myEntity = e;
         init(skin);
     }
 
@@ -39,10 +27,10 @@ public class EntityEditor extends ObjectEditor {
      * @param skin The ui texture set to be used
      */
     private void init(Skin skin) {
-        addBoundingBoxPicker("Bounds: ", myEntity.boundingBox, skin);
-        addFloatNumberPicker("Mass: ", myEntity.mass, skin);
-        addFloatNumberPicker("Health: ", myEntity.health, skin);
-        addStringPicker("AI: ", myEntity.ai.name(), AIType.getNames(), skin);
+        //addBoundingBoxPicker("Bounds: ", myEntity.boundingBox, skin);
+        addFloatNumberPicker("Mass: ", ((Entity)myObject).mass, skin);
+        addFloatNumberPicker("Health: ", ((Entity)myObject).health, skin);
+        addStringPicker("AI: ", ((Entity)myObject).ai.name(), AIType.getNames(), skin);
     }
 
     private void addBoundingBoxPicker(String attrName, Rectangle defaultBoundingBox, Skin skin) {
