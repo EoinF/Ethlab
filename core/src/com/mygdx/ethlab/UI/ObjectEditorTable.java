@@ -1,5 +1,6 @@
 package com.mygdx.ethlab.UI;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -7,33 +8,30 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.GameObject;
 
-/**
- * Created by Eoin on 04/06/2015.
- */
-public class ObjectEditor extends Table {
+public class ObjectEditorTable extends Table {
     Config config;
     protected GameObject myObject;
 
     Image textureDisplay;
     Sprite textureSprite;
 
-    private static final float DEFAULT_COLOUR_COMPONENT_WIDTH = 42;
     private static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
     private static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
     public static final float DEFAULT_LABEL_WIDTH = 70;
 
-    public ObjectEditor(Config config, Skin skin) {
+    public ObjectEditorTable(Config config, Skin skin) {
         this.config = config;
         myObject = new GameObject();
         init(skin);
     }
 
-    public ObjectEditor(Config config, Skin skin, GameObject o) {
+    public ObjectEditorTable(Config config, Skin skin, GameObject o) {
         this.config = config;
         myObject = o;
         init(skin);
@@ -120,58 +118,12 @@ public class ObjectEditor extends Table {
     }
 
     void addColourPicker(String attrName, Color defaultColour, Skin skin) {
-        Table colourPickerTable = new Table();
+        Table colourPickerTable = new ColourPicker(attrName, defaultColour, textureDisplay, textureSprite, skin);
         colourPickerTable.align(Align.left);
         colourPickerTable
                 .defaults()
                     .padRight(2);
 
-        //Create the red component picker
-        TextField redField = new TextField(String.valueOf((int)(defaultColour.r * 255)), skin);
-        redField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
-                Color newColour = textureSprite.getColor();
-                int value = getByteFromTextField(field);
-                newColour.r = value / 255f;
-                textureSprite.setColor(newColour);
-                textureDisplay.setDrawable(new SpriteDrawable(textureSprite));
-            }
-        });
-        redField.setMaxLength(3);
-
-        TextField greenField = new TextField(String.valueOf((int)(defaultColour.g * 255)), skin);
-        greenField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
-                Color newColour = textureSprite.getColor();
-                int value = getByteFromTextField(field);
-                newColour.g = value / 255f;
-                textureSprite.setColor(newColour);
-                textureDisplay.setDrawable(new SpriteDrawable(textureSprite));
-            }
-        });
-        greenField.setMaxLength(3);
-
-        TextField blueField = new TextField(String.valueOf((int)(defaultColour.b * 255)), skin);
-        blueField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
-                Color newColour = textureSprite.getColor();
-                int value = getByteFromTextField(field);
-                newColour.b = value / 255f;
-                textureSprite.setColor(newColour);
-                textureDisplay.setDrawable(new SpriteDrawable(textureSprite));
-            }
-        });
-        blueField.setMaxLength(3);
-
-        Label label = new Label(attrName, skin);
-
-        colourPickerTable.add(label);
-        colourPickerTable.add(redField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
-        colourPickerTable.add(greenField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
-        colourPickerTable.add(blueField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
         add(colourPickerTable)
                 .fillX()
                 .expandX();
@@ -228,21 +180,4 @@ public class ObjectEditor extends Table {
                 .align(Align.left);
     }
 
-    private static int getByteFromTextField(TextField field) {
-        //System.out.println(field.getText());
-        int value;
-        try {
-            value = Integer.parseInt(field.getText());
-        }
-        catch (NumberFormatException numException) {
-            value = 0;
-        }
-
-        if (value > 255) {
-            value = 255;
-        } else if (value < 0)
-            value = 0;
-        field.setText(String.valueOf(value));
-        return value;
-    }
 }

@@ -7,12 +7,12 @@ import com.mygdx.ethlab.GameObjects.TerrainShape;
 /**
  * Created by Eoin on 04/06/2015.
  */
-public class TerrainEditor extends ObjectEditor {
-    public TerrainEditor(Config config, Skin skin) {
+public class TerrainEditorTable extends ObjectEditorTable {
+    public TerrainEditorTable(Config config, Skin skin) {
         super(config, skin, new TerrainShape());
         init(skin);
     }
-    public TerrainEditor(Config config, Skin skin, TerrainShape s) {
+    public TerrainEditorTable(Config config, Skin skin, TerrainShape s) {
         super(config, skin, s);
         init(skin);
     }

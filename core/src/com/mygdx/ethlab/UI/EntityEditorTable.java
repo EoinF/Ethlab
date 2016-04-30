@@ -7,17 +7,14 @@ import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.AIType;
 import com.mygdx.ethlab.GameObjects.Entity;
 
-/**
- * Created by Eoin on 04/06/2015.
- */
-public class EntityEditor extends ObjectEditor {
+public class EntityEditorTable extends ObjectEditorTable {
     private static final float DEFAULT_BOUNDS_PICKER_WIDTH = 70;
 
-    public EntityEditor(Config config, Skin skin) {
+    public EntityEditorTable(Config config, Skin skin) {
         super(config, skin, new Entity());
         init(skin);
     }
-    public EntityEditor(Config config, Skin skin, Entity e) {
+    public EntityEditorTable(Config config, Skin skin, Entity e) {
         super(config, skin, e);
         init(skin);
     }

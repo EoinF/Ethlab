@@ -8,9 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 
-/**
- * Created by Eoin on 26/06/2015.
- */
 public class CreateModeTable extends Table {
 
     public CreateModeTable(Config config, Skin skin) {
@@ -61,8 +58,8 @@ public class CreateModeTable extends Table {
         //
         //Create the table that contains the contents of
         //
-        final EntityEditor entityEditor = new EntityEditor(config, skin);
-        final TerrainEditor terrainEditor = new TerrainEditor(config, skin);
+        final EntityEditorTable entityEditor = new EntityEditorTable(config, skin);
+        final TerrainEditorTable terrainEditor = new TerrainEditorTable(config, skin);
         terrainEditor
                 .align(Align.topLeft)
                 .setVisible(false);

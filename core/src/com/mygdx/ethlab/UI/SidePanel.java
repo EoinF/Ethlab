@@ -15,11 +15,9 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
 
-/**
- * Created by Eoin on 01/06/2015.
- */
 public class SidePanel extends Table {
 
+    private static Color SIDEPANEL_COLOUR = new Color(0.1f, 0.1f, 0.1f, 1);
     public SidePanel(float width, float height, Config config, Skin skin) {
         super();
 
@@ -30,7 +28,7 @@ public class SidePanel extends Table {
         //
         //Set the background for the side panel
         //
-        setBackgroundColour(this, new Color(0.1f, 0.1f, 0.1f, 1));
+        setBackgroundColour(this, SIDEPANEL_COLOUR);
 
         //
         //Toolbar control that is always visible
@@ -38,7 +36,7 @@ public class SidePanel extends Table {
         final Toolbar toolbar = new Toolbar(config.atlas, skin);
         add(toolbar).expandX().fillX();
         row();
-//
+        //
         //Scroll table within sidepanel
         //
         Table scrolltable = new Table()
@@ -83,6 +81,11 @@ public class SidePanel extends Table {
                 .fillX();
     }
 
+    /**
+     * Sets the background of a Scene2d Table to the specified colour
+     * @param table Scene2d Table
+     * @param colour new background colour
+     */
     public static void setBackgroundColour(Table table, Color colour) {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB888);
         pixmap.setColor(colour);

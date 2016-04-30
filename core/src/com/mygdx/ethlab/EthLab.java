@@ -80,7 +80,7 @@ public class EthLab extends ApplicationAdapter {
 		config.dispose();
 	}
 
-	public void showUI(Skin skin) {
+	private void showUI(Skin skin) {
 		//
 		//Side panel
 		//
