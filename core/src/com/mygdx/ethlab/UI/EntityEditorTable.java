@@ -10,6 +10,10 @@ import com.mygdx.ethlab.GameObjects.Entity;
 public class EntityEditorTable extends ObjectEditorTable {
     private static final float DEFAULT_BOUNDS_PICKER_WIDTH = 70;
 
+    private Entity myEntity() {
+        return (Entity)myObject;
+    }
+
     public EntityEditorTable(Config config, Skin skin) {
         super(config, skin, new Entity());
         init(skin);
@@ -25,9 +29,9 @@ public class EntityEditorTable extends ObjectEditorTable {
      */
     private void init(Skin skin) {
         //addBoundingBoxPicker("Bounds: ", myEntity.boundingBox, skin);
-        addFloatNumberPicker("Mass: ", ((Entity)myObject).mass, skin);
-        addFloatNumberPicker("Health: ", ((Entity)myObject).health, skin);
-        addStringPicker("AI: ", ((Entity)myObject).ai.name(), AIType.getNames(), skin);
+        addFloatNumberPicker("Mass: ", myEntity().mass, skin);
+        addFloatNumberPicker("Health: ", myEntity().health, skin);
+        addStringPicker("AI: ", myEntity().ai.name(), AIType.getNames(), skin);
     }
 
     private void addBoundingBoxPicker(String attrName, Rectangle defaultBoundingBox, Skin skin) {

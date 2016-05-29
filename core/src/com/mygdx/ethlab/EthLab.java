@@ -8,15 +8,19 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.ethlab.UI.SidePanel;
+import com.sun.xml.internal.bind.annotation.OverrideAnnotationOf;
 
 public class EthLab extends ApplicationAdapter {
 
@@ -27,6 +31,9 @@ public class EthLab extends ApplicationAdapter {
 	OrthographicCamera camera;
 	static final float DEFAULT_CAMERA_SPEED = 5f;
 	public static final float DEFAULT_SIDEPANEL_WIDTH = 250;
+
+	// The main view is the part of the screen which holds the game world and objects/entities (i.e. the game stage)
+	boolean isMainViewFocused;
 
 	@Override
 	public void create() {
@@ -82,29 +89,60 @@ public class EthLab extends ApplicationAdapter {
 
 	private void showUI(Skin skin) {
 		//
-		//Side panel
+		// Side panel
 		//
 		SidePanel sidePanel = new SidePanel(DEFAULT_SIDEPANEL_WIDTH, uiStage.getHeight(), config, skin);
 		uiStage.addActor(sidePanel);
 		sidePanel.setPosition(uiStage.getWidth() - sidePanel.getWidth(), 0);
+
+		//
+		// Main view
+		//
+		final Actor mainView = new Actor();
+		mainView.setBounds(0, 0, gameStage.getWidth() - sidePanel.getWidth(), gameStage.getHeight());
+		mainView.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent e, float x, float y) {
+				// Lose focus of all text fields, etc.
+				uiStage.unfocusAll();
+				uiStage.setKeyboardFocus(mainView);
+				isMainViewFocused = true;
+			}
+		});
+		mainView.addListener(new FocusListener() {
+			@Override
+			public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
+				super.keyboardFocusChanged(event, actor, focused);
+				if (!focused) {
+					isMainViewFocused = false;
+				}
+			}
+		});
+		uiStage.addActor(mainView);
+
+		// Main view is focused by default
+		isMainViewFocused = true;
+		uiStage.setKeyboardFocus(mainView);
 
 		Gdx.input.setInputProcessor(uiStage);
 	}
 
 
 	public void updateCameraInput() {
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			camera.translate(-DEFAULT_CAMERA_SPEED, 0);
+		if (isMainViewFocused) {
+			if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+				camera.translate(-DEFAULT_CAMERA_SPEED, 0);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+				camera.translate(DEFAULT_CAMERA_SPEED, 0);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+				camera.translate(0, DEFAULT_CAMERA_SPEED);
+			}
+			if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+				camera.translate(0, -DEFAULT_CAMERA_SPEED);
+			}
+			camera.update();
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			camera.translate(DEFAULT_CAMERA_SPEED, 0);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			camera.translate(0, DEFAULT_CAMERA_SPEED);
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			camera.translate(0, -DEFAULT_CAMERA_SPEED);
-		}
-		camera.update();
 	}
 }
