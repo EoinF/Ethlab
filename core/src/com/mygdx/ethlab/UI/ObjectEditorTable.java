@@ -21,8 +21,8 @@ public class ObjectEditorTable extends Table {
     Image textureDisplay;
     Sprite textureSprite;
 
-    private static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
-    private static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
+    public static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
+    public static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
     public static final float DEFAULT_LABEL_WIDTH = 70;
 
     public ObjectEditorTable(Config config, Skin skin) {

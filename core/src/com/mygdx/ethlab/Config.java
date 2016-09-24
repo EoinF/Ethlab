@@ -134,4 +134,8 @@ public class Config {
             return textureNames;
         }
     }
+
+    public String getDefaultTerrainTexture() {
+        return textureNames[0];
+    }
 }

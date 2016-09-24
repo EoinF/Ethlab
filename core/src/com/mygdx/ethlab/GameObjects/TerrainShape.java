@@ -7,14 +7,21 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.UI.IShape2D;
 
-/**
- * Created by Eoin on 13/05/2015.
- */
-public class TerrainShape extends GameObject {
-    public float points[];
-
+public class TerrainShape extends GameObject implements IShape2D {
+    private float points[];
     private PolygonSprite poly;
+
+    public float[] getPoints() {
+        return points;
+    }
+
+    public void setPoints(float[] points) {
+        this.points = points;
+        this.poly = null;
+    }
+
     public PolygonSprite getSprite(TextureRegion textureRegion) {
         //Generate the sprite if it hasn't been generated yet
         if (poly == null) {

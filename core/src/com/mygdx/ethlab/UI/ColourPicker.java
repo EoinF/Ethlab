@@ -57,9 +57,9 @@ public class ColourPicker extends Table {
                 newColour.b = getB();
                 // Update this text field if enter is pressed
                 if (c == Input.Keys.ENTER) {
+                    //TODO: This code never seems to be hit
                     field.setText(String.valueOf(getByteFromTextField(field)));
                 }
-                System.out.println("'" + newColour.r + "," + newColour.g + "," + newColour.b + "'");
                 bindedSprite.setColor(newColour);
                 bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
             }

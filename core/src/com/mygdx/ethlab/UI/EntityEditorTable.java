@@ -28,7 +28,7 @@ public class EntityEditorTable extends ObjectEditorTable {
      * @param skin The ui texture set to be used
      */
     private void init(Skin skin) {
-        //addBoundingBoxPicker("Bounds: ", myEntity.boundingBox, skin);
+        addBoundingBoxPicker("Bounds: ", myEntity().boundingBox, skin);
         addFloatNumberPicker("Mass: ", myEntity().mass, skin);
         addFloatNumberPicker("Health: ", myEntity().health, skin);
         addStringPicker("AI: ", myEntity().ai.name(), AIType.getNames(), skin);
