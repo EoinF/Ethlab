@@ -17,6 +17,9 @@ public class PointsPicker extends Table {
     private Skin skin;
     private IShape2D shape;
 
+    // Need to declare this as it doesn't match with Input.Keys.ENTER or Input.Keys.CENTER
+    private static int TEXTFIELD_ENTER = 13;
+
     PointsPicker(IShape2D shape2D, Skin skin) {
         align(Align.left);
         defaults()
@@ -48,9 +51,7 @@ public class PointsPicker extends Table {
                 }
 
                 // Update this text field if enter is pressed
-                System.out.println("point");
-                System.out.println(c);
-                if (c == Input.Keys.ENTER) {
+                if (c == TEXTFIELD_ENTER) {
                     System.out.println(newPoint);
                     field.setText(String.valueOf(newPoint));
                 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -26,6 +27,8 @@ public class ColourPicker extends Table {
     }
 
     private static final float DEFAULT_COLOUR_COMPONENT_WIDTH = 42;
+    // Need to declare this as it doesn't match with Input.Keys.ENTER or Input.Keys.CENTER
+    private static int TEXTFIELD_ENTER = 13;
 
     public ColourPicker (String attrName, Color defaultColour, Image bindedImage, Sprite bindedSprite, Skin skin) {
         this.bindedImage = bindedImage;
@@ -49,16 +52,15 @@ public class ColourPicker extends Table {
         textField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField field, char c) {
-                System.out.println("'" + (int) c + "'");
 
                 Color newColour = bindedSprite.getColor();
                 newColour.r = getR();
                 newColour.g = getG();
                 newColour.b = getB();
                 // Update this text field if enter is pressed
-                if (c == Input.Keys.ENTER) {
-                    //TODO: This code never seems to be hit
+                if (c == TEXTFIELD_ENTER) {
                     field.setText(String.valueOf(getByteFromTextField(field)));
+                    getParent().getStage().unfocusAll();
                 }
                 bindedSprite.setColor(newColour);
                 bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
