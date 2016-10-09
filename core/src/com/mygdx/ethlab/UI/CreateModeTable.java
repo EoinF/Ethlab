@@ -40,7 +40,7 @@ public class CreateModeTable extends Table {
         final Button createTerrainButton = new Button(new Button.ButtonStyle(up, down, down));
         modeRow.addActor(createTerrainButton);
 
-        //Create a button group to only allow one button being pressed at a time
+        //Create a button group to only allow one tab selected at a time
         ButtonGroup<Button> modeSelectGroup = new ButtonGroup<Button>(createEntityButton, createPropButton, createItemButton, createTerrainButton);
 
         modeSelectGroup.setMaxCheckCount(1);

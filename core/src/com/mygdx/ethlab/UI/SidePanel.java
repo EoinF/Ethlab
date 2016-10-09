@@ -13,7 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.EditorState;
 import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.ModeType;
 
 public class SidePanel extends Table {
 
@@ -56,20 +58,21 @@ public class SidePanel extends Table {
         //Contents of sidebar (Changes based on which mode is selected)
         //
         final CreateModeTable createModeTable = new CreateModeTable(config, skin);
-        final EditModeTable editModeTable = new EditModeTable(config, skin);
         final TriggerModeTable triggerModeTable = new TriggerModeTable(config, skin);
 
         ChangeListener onClickModeButton = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 createModeTable.setVisible(toolbar.createModeButton.isChecked());
-                editModeTable.setVisible(toolbar.editModeButton.isChecked());
                 triggerModeTable.setVisible(toolbar.triggerModeButton.isChecked());
+
+                if (toolbar.createModeButton.isChecked()) {
+                    EditorState.setMode(ModeType.CREATE);
+                }
             }
         };
 
         modeSelectStack.add(createModeTable);
-        modeSelectStack.add(editModeTable);
         modeSelectStack.add(triggerModeTable);
 
         toolbar.createModeButton.addListener(onClickModeButton);

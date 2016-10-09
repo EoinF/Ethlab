@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.GameObject;
 
-public class ObjectEditorTable extends Table {
+public abstract class ObjectEditorTable extends Table {
     Config config;
     protected GameObject myObject;
 
@@ -27,7 +27,6 @@ public class ObjectEditorTable extends Table {
 
     public ObjectEditorTable(Config config, Skin skin) {
         this.config = config;
-        myObject = new GameObject();
         init(skin);
     }
 
