@@ -97,6 +97,7 @@ public class EthLab extends ApplicationAdapter {
 
 		//
 		// Main view
+		// (This component is only needed to manage what is being focused. gameStage manages what's drawn inside the main view)
 		//
 		final Actor mainView = new Actor();
 		mainView.setBounds(0, 0, gameStage.getWidth() - sidePanel.getWidth(), gameStage.getHeight());
@@ -113,6 +114,8 @@ public class EthLab extends ApplicationAdapter {
 			@Override
 			public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
 				super.keyboardFocusChanged(event, actor, focused);
+				// This reverts focus to the main view if we aren't focusing on anything
+				// therefore we are always focused on something
 				if (!focused) {
 					isMainViewFocused = false;
 				}

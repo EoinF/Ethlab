@@ -20,9 +20,6 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-/**
- * Created by Eoin on 22/05/2015.
- */
 public class Config {
     public String[] textureNames;
     public Texture[] textureValues;
@@ -88,19 +85,21 @@ public class Config {
         atlas.dispose();
     }
 
-    public TextureRegion getTexture(GameObject object) {
+    public TextureRegion getTexture(String textureName, Class<?> type) {
         TextureRegion r;
 
-        String name = object.textureName;
-        String fullname;
+        String fullName;
 
-        if (object instanceof Entity) {
-            fullname = "Entity/" + name + "/Idle";
-            r = atlas.findRegion(fullname);
+        if (type == Entity.class) {
+            fullName = "Entity/" + textureName + "/Idle";
+            r = atlas.findRegion(fullName);
         }
-        else if (object instanceof TerrainShape) {
-            fullname = name;
-            Texture t = textureMap.get(fullname);
+        else if (type == TerrainShape.class) {
+            fullName = textureName;
+            Texture t = fullName == null ?
+                    textureMap.elements().nextElement() : // Grab the first texture in the list
+                    textureMap.get(fullName); // Grab the given texture
+
             if (t != null) {
                 t.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
                 r = new TextureRegion(t);
@@ -110,8 +109,8 @@ public class Config {
             }
         }
         else {
-            fullname = name;
-            r = atlas.findRegion(name);
+            fullName = textureName;
+            r = atlas.findRegion(textureName);
         }
 
         //If no texture was found, make a debug texture to prevent the application from crashing
@@ -119,7 +118,7 @@ public class Config {
             Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
             pix.setColor(0xDD0000FF);
             pix.fill();
-            Gdx.app.error("Resources", "Texture " + fullname + " not found!");
+            Gdx.app.error("Resources", "Texture " + fullName + " not found!");
             r = new TextureRegion(new Texture(pix));
         }
         return r;

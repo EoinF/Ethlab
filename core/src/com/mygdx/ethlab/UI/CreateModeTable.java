@@ -1,12 +1,20 @@
 package com.mygdx.ethlab.UI;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.GameObjects.AIType;
+import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.GameObjects.TerrainShape;
 
 public class CreateModeTable extends Table {
 
@@ -58,8 +66,16 @@ public class CreateModeTable extends Table {
         //
         //Create the table that contains the contents of
         //
-        final EntityEditorTable entityEditor = new EntityEditorTable(config, skin);
-        final TerrainEditorTable terrainEditor = new TerrainEditorTable(config, skin);
+        final EntityEditorTable entityEditor = new EntityEditorTable(config, skin,
+                new Entity(config.baseEntityNames[0],
+                        GameObject.DEFAULT_COLOUR,
+                        Vector2.Zero,
+                        Entity.DEFAULT_BOUNDING_BOX,
+                        Entity.DEFAULT_MASS,
+                        Entity.DEFAULT_HEALTH,
+                        AIType.NONE));
+
+        final TerrainEditorTable terrainEditor = new TerrainEditorTable(config, skin, new TerrainShape(config.textureNames[0], new float[]{}));
         terrainEditor
                 .align(Align.topLeft)
                 .setVisible(false);

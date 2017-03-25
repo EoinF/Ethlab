@@ -1,18 +1,16 @@
 package com.mygdx.ethlab.UI;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 public class ColourPicker extends Table {
-    private final TextField redField;
-    private final TextField greenField;
-    private final TextField blueField;
+    private TextField redField;
+    private TextField greenField;
+    private TextField blueField;
     private Image bindedImage;
     private Sprite bindedSprite;
 
@@ -31,12 +29,11 @@ public class ColourPicker extends Table {
     private static int TEXTFIELD_ENTER = 13;
 
     public ColourPicker (String attrName, Color defaultColour, Image bindedImage, Sprite bindedSprite, Skin skin) {
-        this.bindedImage = bindedImage;
-        this.bindedSprite = bindedSprite;
-
         redField = createColourTextField((int)(defaultColour.r * 255), skin);
         greenField = createColourTextField((int)(defaultColour.g * 255), skin);
         blueField = createColourTextField((int)(defaultColour.b * 255), skin);
+
+        setImageBinding(bindedImage, bindedSprite);
 
         Label label = new Label(attrName, skin);
 
@@ -46,28 +43,34 @@ public class ColourPicker extends Table {
         add(blueField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
     }
 
+    public void setImageBinding(Image bindedImage, Sprite bindedSprite) {
+        this.bindedImage = bindedImage;
+        this.bindedSprite = bindedSprite;
+        updateBindedImageColour();
+    }
+
     private TextField createColourTextField(int defaultValue, Skin skin) {
         TextField textField = new TextField(String.valueOf(defaultValue), skin);
         addTextFieldFocusLostHandler(textField);
-        textField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
-
-                Color newColour = bindedSprite.getColor();
-                newColour.r = getR();
-                newColour.g = getG();
-                newColour.b = getB();
-                // Update this text field if enter is pressed
-                if (c == TEXTFIELD_ENTER) {
-                    field.setText(String.valueOf(getByteFromTextField(field)));
-                    getParent().getStage().unfocusAll();
-                }
-                bindedSprite.setColor(newColour);
-                bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
+        textField.setTextFieldListener((field, c) -> {
+            // Update this text field if enter is pressed
+            if (c == TEXTFIELD_ENTER) {
+                field.setText(String.valueOf(getByteFromTextField(field)));
+                getParent().getStage().unfocusAll();
             }
+            updateBindedImageColour();
         });
         textField.setMaxLength(3);
         return textField;
+    }
+
+    private void updateBindedImageColour() {
+        Color newColour = bindedSprite.getColor();
+        newColour.r = getR();
+        newColour.g = getG();
+        newColour.b = getB();
+        bindedSprite.setColor(newColour);
+        bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
     }
 
     private static void addTextFieldFocusLostHandler(TextField field) {
@@ -104,5 +107,11 @@ public class ColourPicker extends Table {
         else {
             return value;
         }
+    }
+
+    public void setValues(Color newColour) {
+        redField.setText(String.valueOf(newColour.r));
+        greenField.setText(String.valueOf(newColour.g));
+        blueField.setText(String.valueOf(newColour.b));
     }
 }

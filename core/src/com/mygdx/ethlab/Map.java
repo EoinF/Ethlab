@@ -7,9 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Json;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 
-/**
- * Created by Eoin on 13/05/2015.
- */
 public class Map {
     public TerrainShape shapes[];
     private PolygonSpriteBatch polyBatch;
@@ -30,7 +27,7 @@ public class Map {
         polyBatch.setProjectionMatrix(camera.combined);
         for (TerrainShape shape: shapes) {
             polyBatch.begin();
-            TextureRegion reg = config.getTexture(shape);
+            TextureRegion reg = config.getTexture(shape.textureName, shape.getClass());
             shape.getSprite(reg).draw(polyBatch);
             polyBatch.end();
         }

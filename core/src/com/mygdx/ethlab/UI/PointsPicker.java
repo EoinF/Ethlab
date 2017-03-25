@@ -15,40 +15,32 @@ import static com.mygdx.ethlab.UI.ObjectEditorTable.DEFAULT_COORD_COMPONENT_WIDT
 
 public class PointsPicker extends Table {
     private Skin skin;
-    private IShape2D shape;
 
     // Need to declare this as it doesn't match with Input.Keys.ENTER or Input.Keys.CENTER
     private static int TEXTFIELD_ENTER = 13;
 
-    PointsPicker(IShape2D shape2D, Skin skin) {
+    PointsPicker(float[] points, Skin skin) {
         align(Align.left);
         defaults()
                 .padRight(2)
                 .padBottom(5)
                 .padTop(10);
 
-        this.shape = shape2D;
         this.skin = skin;
         SidePanel.setBackgroundColour(this, Color.GRAY);
-        updatePoints(shape2D);
+        updatePoints(points);
     }
 
-    private void addPointControl(final int index) {
-        final TextField xField = new TextField(String.valueOf(shape.getPoints()[index]), skin);
+    private void addPointControl(final float point) {
+        final TextField xField = new TextField(String.valueOf(point), skin);
         add(xField).width(DEFAULT_COORD_COMPONENT_WIDTH);
 
         addTextFieldFocusLostHandler(xField);
         xField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField field, char c) {
-                float[] points = shape.getPoints();
 
                 float newPoint = getFloatFromTextField(field);
-                // Only re-render the shape if the point has changed
-                if (points[index] != newPoint) {
-                    points[index] = newPoint;
-                    shape.setPoints(points);
-                }
 
                 // Update this text field if enter is pressed
                 if (c == TEXTFIELD_ENTER) {
@@ -73,11 +65,9 @@ public class PointsPicker extends Table {
         });
     }
 
-    void updatePoints(IShape2D shape2D) {
-        this.shape = shape2D;
+    void updatePoints(float[] points) {
         clearChildren();
 
-        float[] points = shape.getPoints();
         for (int i = 0; i < points.length / 2; i++) {
             addPointControl(i * 2);
             addPointControl(i * 2 + 1);

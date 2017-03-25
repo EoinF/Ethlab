@@ -3,18 +3,13 @@ package com.mygdx.ethlab.UI;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.EditorState;
-import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.ModeType;
 
 public class SidePanel extends Table {
@@ -38,6 +33,7 @@ public class SidePanel extends Table {
         final Toolbar toolbar = new Toolbar(config.atlas, skin);
         add(toolbar).expandX().fillX();
         row();
+
         //
         //Scroll table within sidepanel
         //
@@ -60,6 +56,7 @@ public class SidePanel extends Table {
         final CreateModeTable createModeTable = new CreateModeTable(config, skin);
         final TriggerModeTable triggerModeTable = new TriggerModeTable(config, skin);
 
+
         ChangeListener onClickModeButton = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -68,6 +65,9 @@ public class SidePanel extends Table {
 
                 if (toolbar.createModeButton.isChecked()) {
                     EditorState.setMode(ModeType.CREATE);
+                }
+                if (toolbar.triggerModeButton.isChecked()) {
+                    EditorState.setMode(ModeType.TRIGGERS);
                 }
             }
         };
