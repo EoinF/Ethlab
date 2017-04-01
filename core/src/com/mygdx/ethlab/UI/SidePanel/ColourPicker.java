@@ -1,4 +1,4 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -78,7 +78,8 @@ public class ColourPicker extends Table {
             @Override
             public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
                 super.keyboardFocusChanged(event, actor, focused);
-                // Set the value only when we lose focus (more user-friendly than changing every time anything is typed)
+                // Remove invalid integers (e.g. random symbols or characters) only when we lose focus
+                // (more user-friendly than changing every time anything is typed)
                 if (!focused) {
                     int value = getByteFromTextField((TextField)actor);
                     ((TextField)actor).setText(String.valueOf(value));

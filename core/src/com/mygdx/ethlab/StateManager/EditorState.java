@@ -1,71 +1,74 @@
 package com.mygdx.ethlab.StateManager;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.GameObjects.GameObject;
-import com.mygdx.ethlab.ModeType;
-import com.mygdx.ethlab.ObjectType;
-import com.mygdx.ethlab.UI.EntityEditorTable;
-import com.mygdx.ethlab.UI.ObjectEditorTable;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.GameObjects.*;
+import com.mygdx.ethlab.UI.SidePanel.CreateModeTable;
+import com.mygdx.ethlab.Utils;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.Stack;
-import java.util.function.Consumer;
 
 public final class EditorState {
 
-    private static ModeType currentMode = ModeType.CREATE;
-    private static ObjectType currentType = ObjectType.ENTITY;
+    private static ModeType currentMode;
+    private static ObjectType currentType;
 
     private static Stack<Command> completedCommands = new Stack<>();
+    private static GameObject focusedObject;
+    private static Config config;
 
-    // Handlers to be called when editor state is updated
-    private static Consumer<ModeType> onSetMode = newMode -> { /*Do nothing*/ };
-    private static Consumer<ObjectType> onSetType = newType -> { /*Do nothing*/ };
+    private static CreateModeTable createModeTable;
+    private static Stage gameStage;
 
-    private static ObjectEditorTable editorTable;
-    private static GameObject currentObject;
-
-    public void setEditorTable(ObjectEditorTable table) {
-        editorTable = table;
+    public static void init(CreateModeTable table, Config gameConfig) {
+        createModeTable = table;
+        config = gameConfig;
+        setType(ObjectType.ENTITY);
+        setMode(ModeType.CREATE);
     }
-    public void setCurrentObject(GameObject gameObject) {
-        currentObject = gameObject;
+    public static GameObject getFocusedObject() {
+        return focusedObject;
     }
-
-    //
-    // Editor State hooks
-    //
-    public void addSetModeHandler(Consumer<ModeType> handler) {
-        onSetMode.andThen(handler);
+    private static void setFocusedObject(GameObject object) {
+        focusedObject = object;
     }
 
-    public void addSetTypeHandler(Consumer<ObjectType> handler) {
-        onSetType.andThen(handler);
+    private static void clearFocusedObject() {
+        focusedObject = null;
     }
 
     //
     // Editor State interface
     //
-    public static ModeType getMode() {
-        return currentMode;
+    public static boolean isMode(ModeType mode) {
+        return mode == currentMode;
     }
     public static void setMode(ModeType newMode) {
         currentMode = newMode;
-        onSetMode.accept(newMode);
+
+        if (newMode == ModeType.CREATE) {
+            System.out.println(getDefaultGameObject());
+            setFocusedObject(getDefaultGameObject());
+        }
     }
 
-    public static ObjectType getType() {
-        return currentType;
+    public static boolean isType(ObjectType type) {
+        return type == currentType;
     }
     public static void setType(ObjectType newType) {
         currentType = newType;
-        onSetType.accept(newType);
     }
 
 
     static void performAction(Command command) {
         switch(command.actionType) {
             case SET_ENTITY_POSITION:
-                EntityActions.setEntityPosition((EntityEditorTable)editorTable, (Vector2)command.newValue);
+                EntityActions.setEntityPosition(createModeTable.entityEditorTable, (Vector2)command.newValue);
         }
 
         // Save the commands that originate from the UI
@@ -87,4 +90,24 @@ public final class EditorState {
     }
 
 
+
+
+    private static GameObject getDefaultGameObject() {
+        final Dictionary<ObjectType, GameObject> objectTypeMap = new Hashtable<ObjectType, GameObject>() {
+            {
+                put(ObjectType.ENTITY, new Entity(config.baseEntityNames[0],
+                        Entity.DEFAULT_COLOUR,
+                        Vector2.Zero,
+                        Utils.getBoundingBoxFromTexture(config.getTexture(config.baseEntityNames[0], Entity.class)),
+                        Entity.DEFAULT_MASS,
+                        Entity.DEFAULT_HEALTH,
+                        AIType.NONE));
+                put(ObjectType.ITEM, new Item());
+                put(ObjectType.PROP, new Prop());
+                put(ObjectType.TERRAIN, new TerrainShape());
+            }
+        };
+
+        return objectTypeMap.get(currentType);
+    }
 }

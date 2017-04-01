@@ -1,6 +1,5 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

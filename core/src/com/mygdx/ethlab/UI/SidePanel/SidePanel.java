@@ -1,4 +1,4 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,11 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.StateManager.EditorState;
-import com.mygdx.ethlab.ModeType;
+import com.mygdx.ethlab.StateManager.ModeType;
 
 public class SidePanel extends Table {
 
     private static Color SIDEPANEL_COLOUR = new Color(0.1f, 0.1f, 0.1f, 1);
+
     public SidePanel(float width, float height, Config config, Skin skin) {
         super();
 
@@ -51,11 +52,10 @@ public class SidePanel extends Table {
         Stack modeSelectStack = new Stack();
 
         //
-        //Contents of sidebar (Changes based on which mode is selected)
+        // Contents of sidebar (Changes based on which mode is selected)
         //
         final CreateModeTable createModeTable = new CreateModeTable(config, skin);
         final TriggerModeTable triggerModeTable = new TriggerModeTable(config, skin);
-
 
         ChangeListener onClickModeButton = new ChangeListener() {
             @Override
@@ -82,6 +82,8 @@ public class SidePanel extends Table {
         scrolltable.add(modeSelectStack)
                 .expandX()
                 .fillX();
+
+        EditorState.init(createModeTable, config);
     }
 
     /**
@@ -97,5 +99,4 @@ public class SidePanel extends Table {
         table.setBackground(background);
         pixmap.dispose();
     }
-
 }

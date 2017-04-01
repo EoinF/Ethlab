@@ -25,7 +25,7 @@ public class Config {
     public Texture[] textureValues;
     private Dictionary<String, Texture> textureMap;
 
-    public String[] spriteNames;
+    private String[] spriteNames;
     public String[] baseEntityNames;
 
     public TextureAtlas atlas;
@@ -70,7 +70,7 @@ public class Config {
             config.textureValues[i] = new Texture(textureFiles[i]);
         }
 
-        config.textureMap = new Hashtable<String, Texture>();
+        config.textureMap = new Hashtable<>();
         //
         //Create a dictionary of string to texture mappings
         //

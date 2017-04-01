@@ -1,9 +1,6 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -15,8 +12,13 @@ import com.mygdx.ethlab.GameObjects.AIType;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
+import com.mygdx.ethlab.StateManager.ObjectType;
+import com.mygdx.ethlab.StateManager.EditorState;
 
 public class CreateModeTable extends Table {
+
+    public EntityEditorTable entityEditorTable;
+    public TerrainEditorTable terrainEditorTable;
 
     public CreateModeTable(Config config, Skin skin) {
         //
@@ -64,9 +66,9 @@ public class CreateModeTable extends Table {
         Stack editorStack = new Stack();
 
         //
-        //Create the table that contains the contents of
+        //Create the table that controls entity attributes
         //
-        final EntityEditorTable entityEditor = new EntityEditorTable(config, skin,
+        entityEditorTable = new EntityEditorTable(config, skin,
                 new Entity(config.baseEntityNames[0],
                         GameObject.DEFAULT_COLOUR,
                         Vector2.Zero,
@@ -75,27 +77,40 @@ public class CreateModeTable extends Table {
                         Entity.DEFAULT_HEALTH,
                         AIType.NONE));
 
-        final TerrainEditorTable terrainEditor = new TerrainEditorTable(config, skin, new TerrainShape(config.textureNames[0], new float[]{}));
-        terrainEditor
+        terrainEditorTable = new TerrainEditorTable(config, skin, new TerrainShape(config.textureNames[0], new float[]{}));
+        terrainEditorTable
                 .align(Align.topLeft)
                 .setVisible(false);
 
-        editorStack.add(entityEditor);
-        editorStack.add(terrainEditor);
+        editorStack.add(entityEditorTable);
+        editorStack.add(terrainEditorTable);
+
 
         //
         //Add the logic for switching between modes
         //
-        ChangeListener onClickModeButton = new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                entityEditor.setVisible(createEntityButton.isChecked());
-                terrainEditor.setVisible(createTerrainButton.isChecked());
-            }
+        Runnable updateTableVisibility = () -> {
+            entityEditorTable.setVisible(createEntityButton.isChecked());
+            terrainEditorTable.setVisible(createTerrainButton.isChecked());
         };
 
-        createEntityButton.addListener(onClickModeButton);
-        createTerrainButton.addListener(onClickModeButton);
+        // Switch to Entity
+        createEntityButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateTableVisibility.run();
+                EditorState.setType(ObjectType.ENTITY);
+            }
+        });
+
+        // Switch to Terrain
+        createTerrainButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateTableVisibility.run();
+                EditorState.setType(ObjectType.TERRAIN);
+            }
+        });
 
         add(editorStack)
                 .expandX()

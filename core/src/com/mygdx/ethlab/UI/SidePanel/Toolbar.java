@@ -1,4 +1,4 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;

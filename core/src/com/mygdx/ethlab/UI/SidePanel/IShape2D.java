@@ -1,4 +1,4 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
 /**
  * Created by Eoin on 9/24/2016.

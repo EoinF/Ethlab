@@ -1,13 +1,8 @@
 package com.mygdx.ethlab.GameObjects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.UI.IShape2D;
+import com.mygdx.ethlab.UI.SidePanel.IShape2D;
 
 public class TerrainShape extends GameObject implements IShape2D {
     private float points[];

@@ -1,4 +1,4 @@
-package com.mygdx.ethlab;
+package com.mygdx.ethlab.StateManager;
 
 public enum ModeType {
     CREATE,

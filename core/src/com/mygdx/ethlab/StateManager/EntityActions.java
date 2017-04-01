@@ -1,7 +1,7 @@
 package com.mygdx.ethlab.StateManager;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.UI.EntityEditorTable;
+import com.mygdx.ethlab.UI.SidePanel.EntityEditorTable;
 
 public class EntityActions {
 

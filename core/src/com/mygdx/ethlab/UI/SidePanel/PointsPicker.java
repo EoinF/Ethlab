@@ -1,17 +1,12 @@
-package com.mygdx.ethlab.UI;
+package com.mygdx.ethlab.UI.SidePanel;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
-import static com.mygdx.ethlab.UI.ObjectEditorTable.DEFAULT_COORD_COMPONENT_WIDTH;
 
 public class PointsPicker extends Table {
     private Skin skin;
@@ -33,7 +28,7 @@ public class PointsPicker extends Table {
 
     private void addPointControl(final float point) {
         final TextField xField = new TextField(String.valueOf(point), skin);
-        add(xField).width(DEFAULT_COORD_COMPONENT_WIDTH);
+        add(xField).width(ObjectEditorTable.DEFAULT_COORD_COMPONENT_WIDTH);
 
         addTextFieldFocusLostHandler(xField);
         xField.setTextFieldListener(new TextField.TextFieldListener() {
