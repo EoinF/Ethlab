@@ -1,13 +1,14 @@
 package com.mygdx.ethlab.StateManager;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.GameMap;
 import com.mygdx.ethlab.GameObjects.*;
-import com.mygdx.ethlab.UI.SidePanel.CreateModeTable;
+import com.mygdx.ethlab.UI.MainView.MainView;
+import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 import com.mygdx.ethlab.Utils;
+import com.mygdx.ethlab.StateManager.CommandFactory.Command;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -22,25 +23,45 @@ public final class EditorState {
     private static GameObject focusedObject;
     private static Config config;
 
-    private static CreateModeTable createModeTable;
-    private static Stage gameStage;
+    private static void setFocusedObject(GameObject gameObject) {
+        focusedObject = gameObject;
+        mainView.setFocusedObject(gameObject);
+    }
 
-    public static void init(CreateModeTable table, Config gameConfig) {
-        createModeTable = table;
+    /*
+        The three representations of the current map's state.
+        Only 'map' is the source of truth. The others are just for rendering
+     */
+    private static SidePanel sidePanel;
+    private static MainView mainView;
+    private static GameMap map;
+
+    public static void init(SidePanel _sidePanel, MainView _mainView, GameMap _map, Config gameConfig) {
+        sidePanel = _sidePanel;
+        mainView = _mainView;
+        map = _map;
+
+        mainView.setGameObjects(map.gameObjects);
+        mainView.setShapes(map.shapes);
+
         config = gameConfig;
         setType(ObjectType.ENTITY);
         setMode(ModeType.CREATE);
     }
-    public static GameObject getFocusedObject() {
-        return focusedObject;
-    }
-    private static void setFocusedObject(GameObject object) {
-        focusedObject = object;
+
+    private static int idGenerator = 0;
+    public static int getNextId() {
+        return idGenerator++;
     }
 
-    private static void clearFocusedObject() {
-        focusedObject = null;
+    public static GameObject getObjectById(int id) {
+        if (id == focusedObject.id) {
+            return focusedObject;
+        } else {
+            return map.getObjectById(id);
+        }
     }
+
 
     //
     // Editor State interface
@@ -52,7 +73,6 @@ public final class EditorState {
         currentMode = newMode;
 
         if (newMode == ModeType.CREATE) {
-            System.out.println(getDefaultGameObject());
             setFocusedObject(getDefaultGameObject());
         }
     }
@@ -65,14 +85,26 @@ public final class EditorState {
     }
 
 
-    static void performAction(Command command) {
+    public static void performAction(Command command) {
         switch(command.actionType) {
             case SET_ENTITY_POSITION:
-                EntityActions.setEntityPosition(createModeTable.entityEditorTable, (Vector2)command.newValue);
+                EntityActions.setEntityPosition(
+                        sidePanel,
+                        mainView,
+                        map,
+                        command.objectId,
+                        (Vector2)command.newValue);
+            case CREATE_OBJECT:
+                EntityActions.createObject(
+                        sidePanel,
+                        mainView,
+                        map,
+                        command.objectId,
+                        (GameObject)command.newValue);
         }
 
         // Save the commands that originate from the UI
-        // Every other command will trigger a change in the UI
+        // Every other command will trigger a change in the UI (because we use event listeners)
         // and result in a duplicate command being triggered originating from the UI
         // so we only want to ever store it once
         if (command.isOriginUI) {
@@ -88,8 +120,6 @@ public final class EditorState {
     static void undoLast() {
         undoAction(completedCommands.pop());
     }
-
-
 
 
     private static GameObject getDefaultGameObject() {

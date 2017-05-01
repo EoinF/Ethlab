@@ -15,6 +15,11 @@ import com.mygdx.ethlab.StateManager.ModeType;
 public class SidePanel extends Table {
 
     private static Color SIDEPANEL_COLOUR = new Color(0.1f, 0.1f, 0.1f, 1);
+    private CreateModeTable createModeTable;
+
+    public CreateModeTable getCreateModeTable() {
+        return createModeTable;
+    }
 
     public SidePanel(float width, float height, Config config, Skin skin) {
         super();
@@ -54,7 +59,7 @@ public class SidePanel extends Table {
         //
         // Contents of sidebar (Changes based on which mode is selected)
         //
-        final CreateModeTable createModeTable = new CreateModeTable(config, skin);
+        createModeTable = new CreateModeTable(config, skin);
         final TriggerModeTable triggerModeTable = new TriggerModeTable(config, skin);
 
         ChangeListener onClickModeButton = new ChangeListener() {
@@ -82,8 +87,6 @@ public class SidePanel extends Table {
         scrolltable.add(modeSelectStack)
                 .expandX()
                 .fillX();
-
-        EditorState.init(createModeTable, config);
     }
 
     /**

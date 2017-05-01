@@ -9,8 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.StateManager.CommandFactory;
+import com.mygdx.ethlab.StateManager.EditorState;
+import com.mygdx.ethlab.StateManager.ModeType;
+
+import static com.mygdx.ethlab.UI.SidePanel.utils.*;
 
 public abstract class ObjectEditorTable extends Table {
     Config config;
@@ -20,6 +26,7 @@ public abstract class ObjectEditorTable extends Table {
 
     private SelectBox<String> textureField;
     private ColourPicker colourField;
+    private TextField[] positionFields;
 
     public static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
     public static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
@@ -36,7 +43,8 @@ public abstract class ObjectEditorTable extends Table {
     }
 
     public void setPosition(Vector2 position) {
-
+        positionFields[0].setText(String.valueOf(position.x));
+        positionFields[1].setText(String.valueOf(position.y));
     }
 
     /**
@@ -50,7 +58,20 @@ public abstract class ObjectEditorTable extends Table {
 
         textureField = addTexturePicker("Texture: ", config.getTextureNames(myObject), myObject.getClass(), myObject.textureName, skin);
         colourField = addColourPicker("Colour: ", myObject.colour, skin);
-        addCoordinatePicker("Position: ", myObject.position, skin);
+        positionFields = addCoordinatePicker("Position: ", myObject.position, skin);
+
+        addTextFieldCommitInputHandler(positionFields[0], field -> {
+            float newX = getFloatFromTextField(field);
+            System.out.println(newX);
+            field.setText(String.valueOf(newX));
+            //CommandFactory.setObjectPosition(myObject.id, new Vector2(newX, myObject.position.y), true);
+        });
+        addTextFieldCommitInputHandler(positionFields[1], field -> {
+            float newY = getFloatFromTextField(field);
+            System.out.println(newY);
+            field.setText(String.valueOf(newY));
+            //CommandFactory.setObjectPosition(myObject.id, new Vector2(myObject.position.x, newY), true);
+        });
     }
 
     SelectBox<String> addTexturePicker(String attrName, String[] textureList, Class<?> objectType, String textureName, Skin skin) {
@@ -120,7 +141,7 @@ public abstract class ObjectEditorTable extends Table {
     }
 
 
-    private void addCoordinatePicker(String attrName, Vector2 defaultCoordinates, Skin skin) {
+    private TextField[] addCoordinatePicker(String attrName, Vector2 defaultCoordinates, Skin skin) {
         Table coordPickerTable = new Table();
         coordPickerTable.align(Align.left);
         coordPickerTable
@@ -128,21 +149,9 @@ public abstract class ObjectEditorTable extends Table {
                     .padRight(2);
 
         Label label = new Label(attrName, skin);
-        TextField xField = new TextField(String.valueOf(defaultCoordinates.x), skin);
-        xField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
-                //Handle change in x coordinates
-            }
-        });
 
+        TextField xField = new TextField(String.valueOf(defaultCoordinates.x), skin);
         TextField yField = new TextField(String.valueOf(defaultCoordinates.y), skin);
-        yField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
-                //Handle change in y coordinates
-            }
-        });
 
         coordPickerTable.add(label);
         coordPickerTable.add(xField).width(DEFAULT_COORD_COMPONENT_WIDTH);
@@ -151,6 +160,8 @@ public abstract class ObjectEditorTable extends Table {
                 .fillX()
                 .expandX();
         row();
+
+        return new TextField[] { xField, yField };
     }
 
     SelectBox<String> addSelectBox(String selectTitle, String selectedOption, String[] selectOptions, Skin skin) {

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -22,21 +23,25 @@ public class EthLab extends ApplicationAdapter {
 
 	private Config config;
 	private Stage uiStage;
-	private Stage gameStage;
 	MainView mainView;
+	GameMap map;
 
 	@Override
 	public void create() {
 		OrthographicCamera camera = new OrthographicCamera(1280, 720);
 		config = Config.loadConfig();
 
-		mainView = new MainView(camera, Map.loadMap(Gdx.files.internal("levels/1.txt")), config);
+		map = GameMap.loadMap(Gdx.files.internal("levels/1.txt"));
 
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-		gameStage = new Stage(new StretchViewport(1280, 720, camera));
+		Stage gameStage = new Stage(new StretchViewport(1280, 720, camera));
+
 		uiStage = new Stage(new StretchViewport(1280, 720));
 
-		initUIStage(skin);
+		mainView = new MainView(camera, gameStage, config);
+		SidePanel sidePanel = initUIStage(skin);
+
+		EditorState.init(sidePanel, mainView, map, config);
 	}
 
 
@@ -47,19 +52,21 @@ public class EthLab extends ApplicationAdapter {
 
 		float delta = Gdx.graphics.getDeltaTime();
 
-		mainView.update();
-
-		gameStage.act(delta);
+		mainView.act();
 		uiStage.act(delta);
 
-		gameStage.draw();
-		uiStage.draw();
+		try {
+			mainView.draw();
+			uiStage.draw();
+		} catch(Exception ex) {
+			System.out.println("Fatal: Exception while rendering: " + ex.getMessage());
+		}
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		uiStage.getViewport().setScreenSize(width, height);
-		gameStage.getViewport().setScreenSize(width, height);
+		mainView.getStage().getViewport().setScreenSize(width, height);
 	}
 
 	@Override
@@ -77,7 +84,12 @@ public class EthLab extends ApplicationAdapter {
 		config.dispose();
 	}
 
-	private void initUIStage(Skin skin) {
+	/**
+	 * Initializes the ui stage and returns the SidePanel
+	 * @param skin ...
+	 * @return side panel
+     */
+	private SidePanel initUIStage(Skin skin) {
 		//
 		// Side panel
 		//
@@ -87,19 +99,29 @@ public class EthLab extends ApplicationAdapter {
 
 		//
 		// Main view
-		// (This component is only needed to manage what is being focused. gameStage manages what's drawn inside the main view)
+		// (This component is needed to manage what is being focused and drawn inside the game view
 		//
-		mainView.setBounds(0, 0, gameStage.getWidth() - sidePanel.getWidth(), gameStage.getHeight());
-		mainView.addListener(new ClickListener() {
+		Actor mainViewActor = mainView.getRootActor();
+		Stage gameStage = mainView.getStage();
+		mainViewActor.setBounds(0, 0, gameStage.getWidth() - sidePanel.getWidth(), gameStage.getHeight());
+		mainViewActor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent e, float x, float y) {
 				// Lose focus of all text fields, etc.
 				uiStage.unfocusAll();
-				uiStage.setKeyboardFocus(mainView);
+				System.out.println("unfocus all");
+				uiStage.setKeyboardFocus(mainViewActor);
 				mainView.isFocused = true;
 			}
 		});
-		mainView.addListener(new FocusListener() {
+		sidePanel.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent e, float x, float y) {
+				// Lose focus of the main view
+				mainView.isFocused = false;
+			}
+		});
+		mainViewActor.addListener(new FocusListener() {
 			@Override
 			public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
 				super.keyboardFocusChanged(event, actor, focused);
@@ -110,12 +132,15 @@ public class EthLab extends ApplicationAdapter {
 				}
 			}
 		});
-		uiStage.addActor(mainView);
+
+		uiStage.addActor(mainViewActor);
 
 		// Main view is focused by default
 		mainView.isFocused = true;
-		uiStage.setKeyboardFocus(mainView);
+		uiStage.setKeyboardFocus(mainViewActor);
 
 		Gdx.input.setInputProcessor(uiStage);
+
+		return sidePanel;
 	}
 }
