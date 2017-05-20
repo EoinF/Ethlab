@@ -3,10 +3,8 @@ package com.mygdx.ethlab;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -20,11 +18,18 @@ import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 public class EthLab extends ApplicationAdapter {
 
 	public static final float DEFAULT_SIDEPANEL_WIDTH = 250;
+	private static final FocusListener.FocusEvent FOCUS_LOST_EVENT = new FocusListener.FocusEvent();
 
 	private Config config;
 	private Stage uiStage;
 	MainView mainView;
 	GameMap map;
+
+	static {
+		FOCUS_LOST_EVENT.setFocused(false);
+		FOCUS_LOST_EVENT.setType(FocusListener.FocusEvent.Type.keyboard);
+	}
+
 
 	@Override
 	public void create() {
@@ -107,6 +112,11 @@ public class EthLab extends ApplicationAdapter {
 		mainViewActor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent e, float x, float y) {
+				// Trigger the focus changed listener of the focused actor
+				Actor focusedActor = uiStage.getKeyboardFocus();
+				if (focusedActor != null) {
+					focusedActor.fire(FOCUS_LOST_EVENT);
+				}
 				// Lose focus of all text fields, etc.
 				uiStage.unfocusAll();
 				System.out.println("unfocus all");
