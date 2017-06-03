@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -21,14 +19,17 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.GameObjects.Item;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.ModeType;
+import com.mygdx.ethlab.UI.EditorObject;
 
 /**
  The main view is the part of the screen which holds the game world and objects/entities (i.e. the game stage)
@@ -55,7 +56,7 @@ public class MainView {
     }
 
     private Map<Integer, Actor> gameObjectMap;
-    private Map<Integer, Actor> gameShapeMap;
+    private Map<Integer, PolygonSprite> gameShapeMap;
 
     private Sprite focusedObjectSprite;
     private Rectangle focusedObjectBoundingBox;
@@ -90,20 +91,21 @@ public class MainView {
     private void actCreateMode() {
         Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         if (Gdx.input.isTouched() && rootActor.hit(mousePosition.x, mousePosition.y, true) != null) {
-            GameObject focusedObject = EditorState.getObjectById(focusedObjectID);
-            focusedObject.position = mousePosition;
+            EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
+            focusedObject.instance.position = mousePosition;
             EditorState.performAction(
-                    CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
+                    CommandFactory.addNewEntity(focusedObjectID, focusedObject, false)
             );
             EditorState.setMode(ModeType.CREATED);
         }
     }
 
-    public void setFocusedObject(GameObject gameObject) {
+    public void setFocusedObject(EditorObject wrapper) {
+        GameObject gameObject = wrapper.instance;
         TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
         focusedObjectSprite = new Sprite(reg);
         focusedObjectSprite.setPosition(gameObject.position.x, gameObject.position.y);
-        focusedObjectID = gameObject.id;
+        focusedObjectID = wrapper.getId();
 
         if (gameObject.getClass() == Entity.class) {
             focusedObjectBoundingBox = ((Entity)gameObject).boundingBox;
@@ -116,43 +118,76 @@ public class MainView {
 
     private Actor createGameObjectActor(GameObject gameObject) {
         TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
-        return new Image(reg);
+        return new Image(new Sprite(reg));
     }
 
-    public void setGameObjects(List<GameObject> gameObjects) {
-        for (GameObject gameObject: gameObjects) {
-            Actor gameObjectActor = createGameObjectActor(gameObject);
-            gameObjectMap.put(gameObject.id, gameObjectActor);
-            Table table = new Table();
-            table.setWidth(100);
-            table.setHeight(200);
-            table.debug();
-            table.setPosition(0, 0);
-            table.add(gameObjectActor);
-            gameStage.addActor(table);
+    private Table objectTable;
+    private Table getOrCreateObjectTable() {
+        if (objectTable != null) {
+            return objectTable;
+        } else {
+            objectTable = new Table();
+            objectTable.setWidth(500);
+            objectTable.setHeight(500);
+            objectTable.align(Align.center);
+            objectTable.setPosition(0, 0);
+            gameStage.addActor(objectTable);
+            return objectTable;
         }
-        gameStage.setDebugAll(true);
     }
 
-    public void updateGameObject(GameObject gameObject) {
-        gameObjectMap.replace(gameObject.id, createGameObjectActor(gameObject));
+    public void setEntities(List<EditorObject<Entity>> entities) {
+        for (EditorObject wrapper: entities) {
+            Entity entity = (Entity)wrapper.instance;
+            Actor gameObjectActor = createGameObjectActor(entity);
+            gameObjectMap.put(wrapper.getId(), gameObjectActor);
+
+            Table table = getOrCreateObjectTable();
+            table.add(gameObjectActor);
+        }
     }
 
-    public void removeGameObject(GameObject gameObject) {
-
+    public void setItems(List<EditorObject<Item>> items) {
+        for (EditorObject wrapper: items) {
+            Item item = (Item)wrapper.instance;
+            Actor gameObjectActor = createGameObjectActor(item);
+            gameObjectMap.put(wrapper.getId(), gameObjectActor);
+            addGameObject(wrapper);
+        }
     }
 
-    public void setShapes(TerrainShape[] gameShapes) {
-        for (TerrainShape shape: gameShapes) {
-            polyBatch.begin();
+    public void addGameObject(EditorObject wrapper) {
+        Actor gameObjectActor = createGameObjectActor(wrapper.instance);
+        gameObjectMap.put(wrapper.getId(), gameObjectActor);
+        getOrCreateObjectTable().add(gameObjectActor);
+    }
+
+    public void updateGameObject(EditorObject wrapper) {
+        gameObjectMap.replace(wrapper.getId(), createGameObjectActor(wrapper.instance));
+    }
+
+    public void removeGameObject(EditorObject wrapper) {
+        gameObjectMap.remove(wrapper.getId());
+    }
+
+    public void setShapes(List<EditorObject<TerrainShape>> gameShapes) {
+        for (EditorObject wrapper: gameShapes) {
+            TerrainShape shape = (TerrainShape)wrapper.instance;
             TextureRegion reg = config.getTexture(shape.textureName, shape.getClass());
-            shape.getSprite(reg).draw(polyBatch);
-            polyBatch.end();
+            gameShapeMap.put(wrapper.getId(), shape.getSprite(reg));
         }
     }
 
     public void draw() throws Exception {
         gameStage.draw();
+
+        polyBatch.setProjectionMatrix(camera.combined);
+        polyBatch.begin();
+        for (PolygonSprite shapeSprite: gameShapeMap.values()) {
+            shapeSprite.draw(polyBatch);
+        }
+        polyBatch.end();
+
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();

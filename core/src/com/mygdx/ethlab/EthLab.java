@@ -23,7 +23,7 @@ public class EthLab extends ApplicationAdapter {
 	private Config config;
 	private Stage uiStage;
 	MainView mainView;
-	GameMap map;
+	EditorMap map;
 
 	static {
 		FOCUS_LOST_EVENT.setFocused(false);
@@ -36,7 +36,7 @@ public class EthLab extends ApplicationAdapter {
 		OrthographicCamera camera = new OrthographicCamera(1280, 720);
 		config = Config.loadConfig();
 
-		map = GameMap.loadMap(Gdx.files.internal("levels/1.txt"));
+		map = EditorMap.loadMap(Gdx.files.internal("levels/1.txt"));
 
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
 		Stage gameStage = new Stage(new StretchViewport(1280, 720, camera));

@@ -13,19 +13,16 @@ public abstract class GameObject {
     public String textureName;
     public Color colour;
     public Vector2 position;
-    public int id;
 
     public GameObject() {
         textureName = null;
         colour = DEFAULT_COLOUR;
         position = Vector2.Zero;
-        id = EditorState.getNextId();
     }
 
     public GameObject(String textureName, Color colour, Vector2 position) {
         this.textureName = textureName;
         this.colour = colour;
         this.position = position;
-        id = EditorState.getNextId();
     }
 }

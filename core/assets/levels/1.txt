@@ -1,25 +1,49 @@
 {
     "shapes": [
         {
-            "textureName": "Bush",
-            "points": [
-                50, 55,
-                130, 130,
-                210, 150,
-                250, 100,
-                150, 70,
-                50, 55
-            ]
+            "name": "shape1",
+            "instance": {
+                "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
+                "textureName": "Bush",
+                "points": [
+                    50, 55,
+                    130, 130,
+                    210, 150,
+                    250, 100,
+                    150, 70,
+                    50, 55
+                ]
+            }
         },
         {
-            "textureName": "Bush",
-            "points": [
-                300, 480,
-                380, 480,
-                380, 300
-             ]
-         }
+            "name": "shape2",
+            "instance": {
+                "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
+                "textureName": "Bush",
+                "points": [
+                    300, 480,
+                    380, 480,
+                    380, 300
+                 ]
+            }
+        }
+    ],
+    "entities": [
+        {
+            "name": "abc",
+            "instance": {
+                "class": "com.mygdx.ethlab.GameObjects.Entity",
+                "textureName": "Mick",
+                "position": {
+                    "x": 100,
+                    "y": 100
+                },
+                "colour": {
+                    "r": 255,
+                    "g": 0,
+                    "b": 0
+                }
+            }
+        }
     ]
-
-    "gameObjects": []
 }

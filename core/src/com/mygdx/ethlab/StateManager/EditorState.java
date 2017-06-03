@@ -1,10 +1,10 @@
 package com.mygdx.ethlab.StateManager;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameMap;
+import com.mygdx.ethlab.EditorMap;
 import com.mygdx.ethlab.GameObjects.*;
+import com.mygdx.ethlab.UI.EditorObject;
 import com.mygdx.ethlab.UI.MainView.MainView;
 import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 import com.mygdx.ethlab.Utils;
@@ -20,10 +20,10 @@ public final class EditorState {
     private static ObjectType currentType;
 
     private static Stack<Command> completedCommands = new Stack<>();
-    private static GameObject focusedObject;
+    private static EditorObject focusedObject;
     private static Config config;
 
-    private static void setFocusedObject(GameObject gameObject) {
+    private static void setFocusedObject(EditorObject gameObject) {
         focusedObject = gameObject;
         mainView.setFocusedObject(gameObject);
     }
@@ -34,14 +34,15 @@ public final class EditorState {
      */
     private static SidePanel sidePanel;
     private static MainView mainView;
-    private static GameMap map;
+    private static EditorMap map;
 
-    public static void init(SidePanel _sidePanel, MainView _mainView, GameMap _map, Config gameConfig) {
+    public static void init(SidePanel _sidePanel, MainView _mainView, EditorMap _map, Config gameConfig) {
         sidePanel = _sidePanel;
         mainView = _mainView;
         map = _map;
 
-        mainView.setGameObjects(map.gameObjects);
+        mainView.setEntities(map.entities);
+        mainView.setItems(map.items);
         mainView.setShapes(map.shapes);
 
         config = gameConfig;
@@ -50,12 +51,15 @@ public final class EditorState {
     }
 
     private static int idGenerator = 0;
-    public static int getNextId() {
+    public static int getNextIdAndIncrement() {
         return idGenerator++;
     }
+    public static int peekNextId() {
+        return idGenerator;
+    }
 
-    public static GameObject getObjectById(int id) {
-        if (id == focusedObject.id) {
+    public static EditorObject getObjectById(int id) {
+        if (id == focusedObject.getId()) {
             return focusedObject;
         } else {
             return map.getObjectById(id);
@@ -94,13 +98,13 @@ public final class EditorState {
                         map,
                         command.objectId,
                         (Vector2)command.newValue);
-            case CREATE_OBJECT:
-                EntityActions.createObject(
+            case CREATE_ENTITY:
+                EntityActions.createEntity(
                         sidePanel,
                         mainView,
                         map,
                         command.objectId,
-                        (GameObject)command.newValue);
+                        (EditorObject) command.newValue);
         }
 
         // Save the commands that originate from the UI
@@ -122,7 +126,7 @@ public final class EditorState {
     }
 
 
-    private static GameObject getDefaultGameObject() {
+    private static EditorObject getDefaultGameObject() {
         final Dictionary<ObjectType, GameObject> objectTypeMap = new Hashtable<ObjectType, GameObject>() {
             {
                 put(ObjectType.ENTITY, new Entity(config.baseEntityNames[0],
@@ -138,6 +142,6 @@ public final class EditorState {
             }
         };
 
-        return objectTypeMap.get(currentType);
+        return new EditorObject(objectTypeMap.get(currentType));
     }
 }
