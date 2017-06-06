@@ -16,9 +16,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.ethlab.Config;
@@ -77,27 +80,36 @@ public class MainView {
 
         this.gameObjectMap = new HashMap<>();
         this.gameShapeMap = new HashMap<>();
+
+
+        rootActor.addListener(new InputListener() {
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                if (EditorState.isMode(ModeType.CREATE)) {
+                    actCreateMode(x, y);
+                }
+                return true;
+            }
+        });
     }
 
     public void act() {
         gameStage.act();
-        if (EditorState.isMode(ModeType.CREATE)) {
-            actCreateMode();
-        }
-
         updateCameraInput();
     }
 
-    private void actCreateMode() {
-        Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        if (Gdx.input.isTouched() && rootActor.hit(mousePosition.x, mousePosition.y, true) != null) {
-            EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
-            focusedObject.instance.position = mousePosition;
-            EditorState.performAction(
-                    CommandFactory.addNewEntity(focusedObjectID, focusedObject, false)
-            );
-            EditorState.setMode(ModeType.CREATED);
-        }
+    private void actCreateMode(float x, float y) {
+        EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
+        Entity focusedEntity = ((Entity)focusedObject.instance);
+
+        Vector3 mousePositionInWorld = camera.unproject(new Vector3(x, rootActor.getHeight() - y, 0));
+
+        focusedObject.instance.position = new Vector2(
+                mousePositionInWorld.x - focusedEntity.boundingBox.getWidth() / 2,
+                mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
+        );
+        EditorState.performAction(
+                CommandFactory.addNewEntity(focusedObjectID, focusedObject, false)
+        );
     }
 
     public void setFocusedObject(EditorObject wrapper) {
@@ -116,54 +128,29 @@ public class MainView {
         }
     }
 
-    private Actor createGameObjectActor(GameObject gameObject) {
+    private Image createGameObjectImage(GameObject gameObject) {
         TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
-        return new Image(new Sprite(reg));
-    }
-
-    private Table objectTable;
-    private Table getOrCreateObjectTable() {
-        if (objectTable != null) {
-            return objectTable;
-        } else {
-            objectTable = new Table();
-            objectTable.setWidth(500);
-            objectTable.setHeight(500);
-            objectTable.align(Align.center);
-            objectTable.setPosition(0, 0);
-            gameStage.addActor(objectTable);
-            return objectTable;
-        }
+        Image image = new Image(new Sprite(reg));
+        image.setPosition(gameObject.position.x, gameObject.position.y);
+        return image;
     }
 
     public void setEntities(List<EditorObject<Entity>> entities) {
-        for (EditorObject wrapper: entities) {
-            Entity entity = (Entity)wrapper.instance;
-            Actor gameObjectActor = createGameObjectActor(entity);
-            gameObjectMap.put(wrapper.getId(), gameObjectActor);
-
-            Table table = getOrCreateObjectTable();
-            table.add(gameObjectActor);
-        }
+        entities.forEach(this::addGameObject);
     }
 
     public void setItems(List<EditorObject<Item>> items) {
-        for (EditorObject wrapper: items) {
-            Item item = (Item)wrapper.instance;
-            Actor gameObjectActor = createGameObjectActor(item);
-            gameObjectMap.put(wrapper.getId(), gameObjectActor);
-            addGameObject(wrapper);
-        }
+        items.forEach(this::addGameObject);
     }
 
     public void addGameObject(EditorObject wrapper) {
-        Actor gameObjectActor = createGameObjectActor(wrapper.instance);
-        gameObjectMap.put(wrapper.getId(), gameObjectActor);
-        getOrCreateObjectTable().add(gameObjectActor);
+        Image gameObjectImage = createGameObjectImage(wrapper.instance);
+        gameObjectMap.put(wrapper.getId(), gameObjectImage);
+        gameStage.addActor(gameObjectImage);
     }
 
     public void updateGameObject(EditorObject wrapper) {
-        gameObjectMap.replace(wrapper.getId(), createGameObjectActor(wrapper.instance));
+        gameObjectMap.replace(wrapper.getId(), createGameObjectImage(wrapper.instance));
     }
 
     public void removeGameObject(EditorObject wrapper) {

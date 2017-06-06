@@ -73,6 +73,7 @@ public final class EditorState {
     public static boolean isMode(ModeType mode) {
         return mode == currentMode;
     }
+
     public static void setMode(ModeType newMode) {
         currentMode = newMode;
 

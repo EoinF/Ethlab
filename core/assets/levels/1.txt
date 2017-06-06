@@ -35,7 +35,7 @@
                 "class": "com.mygdx.ethlab.GameObjects.Entity",
                 "textureName": "Mick",
                 "position": {
-                    "x": 100,
+                    "x": 300,
                     "y": 100
                 },
                 "colour": {
