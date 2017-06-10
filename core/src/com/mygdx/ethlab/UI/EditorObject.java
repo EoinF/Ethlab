@@ -1,9 +1,12 @@
 package com.mygdx.ethlab.UI;
 
+import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.GameObjects.Item;
+import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
+import com.mygdx.ethlab.Utils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class EditorObject<T extends GameObject> {
@@ -21,8 +24,11 @@ public class EditorObject<T extends GameObject> {
         return name;
     }
 
+    private boolean isAutoBoundingBox;
+
     public EditorObject() {
         this.id = EditorState.getNextIdAndIncrement();
+        this.isAutoBoundingBox = false;
     }
 
     public EditorObject(T gameObject) {
@@ -36,9 +42,34 @@ public class EditorObject<T extends GameObject> {
         }
         else if (objectClass == Item.class) {
             this.name = "item" + EditorState.peekNextId();
+        }
+        else if (objectClass == TerrainShape.class) {
+            this.name = "shape" + EditorState.peekNextId();
         } else {
             throw (new NotImplementedException());
         }
     }
 
+    public EditorObject(T gameObject, boolean isAutoBoundingBox, Config config) {
+        this(gameObject);
+
+        this.isAutoBoundingBox = isAutoBoundingBox;
+        if (this.isAutoBoundingBox) {
+            setAutoBoundingBox(config);
+        }
+    }
+
+    public void setTexture(String textureName, Config config) {
+        this.instance.textureName = textureName;
+        if (isAutoBoundingBox) {
+            setAutoBoundingBox(config);
+        }
+    }
+
+    private void setAutoBoundingBox(Config config) {
+        if (this.instance.getClass() == Entity.class) {
+            Entity entity = ((Entity)this.instance);
+            entity.boundingBox = Utils.getBoundingBoxFromTexture(config.getTexture(entity.textureName, Entity.class));
+        }
+    }
 }

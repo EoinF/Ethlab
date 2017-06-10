@@ -14,11 +14,13 @@ import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.ObjectType;
 import com.mygdx.ethlab.StateManager.EditorState;
+import com.mygdx.ethlab.UI.EditorObject;
+import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 
 public class CreateModeTable extends Table {
 
-    public EntityEditorTable entityEditorTable;
-    public TerrainEditorTable terrainEditorTable;
+    private EntityEditorTable entityEditorTable;
+    private TerrainEditorTable terrainEditorTable;
 
     public CreateModeTable(Config config, Skin skin) {
         //
@@ -69,15 +71,22 @@ public class CreateModeTable extends Table {
         //Create the table that controls entity attributes
         //
         entityEditorTable = new EntityEditorTable(config, skin,
-                new Entity(config.baseEntityNames[0],
-                        GameObject.DEFAULT_COLOUR,
-                        Vector2.Zero,
-                        Entity.DEFAULT_BOUNDING_BOX,
-                        Entity.DEFAULT_MASS,
-                        Entity.DEFAULT_HEALTH,
-                        AIType.NONE));
+                new EditorObject<>(
+                        new Entity(config.baseEntityNames[0],
+                                GameObject.DEFAULT_COLOUR,
+                                Vector2.Zero,
+                                Entity.DEFAULT_BOUNDING_BOX,
+                                Entity.DEFAULT_MASS,
+                                Entity.DEFAULT_HEALTH,
+                                AIType.NONE)
+                )
+        );
 
-        terrainEditorTable = new TerrainEditorTable(config, skin, new TerrainShape(config.textureNames[0], new float[]{}));
+        terrainEditorTable = new TerrainEditorTable(config, skin,
+                new EditorObject<>(
+                        new TerrainShape(config.textureNames[0], new float[]{})
+                )
+        );
         terrainEditorTable
                 .align(Align.topLeft)
                 .setVisible(false);
@@ -115,5 +124,15 @@ public class CreateModeTable extends Table {
         add(editorStack)
                 .expandX()
                 .fillX();
+    }
+
+    public void setObjectPosition(Vector2 position) {
+        switch (EditorState.getType()) {
+            case ENTITY:
+                entityEditorTable.setPosition(position);
+                break;
+            default:
+                throw new RuntimeException("Unhandled object type: " + EditorState.getType());
+        }
     }
 }

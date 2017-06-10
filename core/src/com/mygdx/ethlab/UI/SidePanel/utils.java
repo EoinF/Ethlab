@@ -18,7 +18,6 @@ public final class utils {
                 // Remove invalid integers (e.g. random symbols or characters) only when we lose focus
                 // (more user-friendly than changing every time anything is typed)
                 if (!focused) {
-                    System.out.println("lost focus");
                     onCommitInput.accept((TextField)actor);
                 }
             }

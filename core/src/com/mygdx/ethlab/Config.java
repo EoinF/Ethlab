@@ -86,6 +86,9 @@ public class Config {
     }
 
     public TextureRegion getTexture(String textureName, Class<?> type) {
+        if (!GameObject.class.isAssignableFrom(type)) {
+            throw new RuntimeException("Tried to fetch texture for non game object class: " + type);
+        }
         TextureRegion r;
 
         String fullName;

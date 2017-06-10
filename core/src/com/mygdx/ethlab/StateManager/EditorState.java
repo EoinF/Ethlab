@@ -1,5 +1,6 @@
 package com.mygdx.ethlab.StateManager;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.EditorMap;
@@ -23,9 +24,13 @@ public final class EditorState {
     private static EditorObject focusedObject;
     private static Config config;
 
-    private static void setFocusedObject(EditorObject gameObject) {
-        focusedObject = gameObject;
-        mainView.setFocusedObject(gameObject);
+    public static EditorObject getFocusedObject() {
+        return focusedObject;
+    }
+
+    public static void setFocusedObject(EditorObject editorObject) {
+        focusedObject = editorObject;
+        mainView.setFocusedObject(editorObject);
     }
 
     /*
@@ -82,8 +87,8 @@ public final class EditorState {
         }
     }
 
-    public static boolean isType(ObjectType type) {
-        return type == currentType;
+    public static ObjectType getType() {
+        return currentType;
     }
     public static void setType(ObjectType newType) {
         currentType = newType;
@@ -92,15 +97,15 @@ public final class EditorState {
 
     public static void performAction(Command command) {
         switch(command.actionType) {
-            case SET_ENTITY_POSITION:
-                EntityActions.setEntityPosition(
+            case SET_OBJECT_POSITION:
+                Actions.setObjectPosition(
                         sidePanel,
                         mainView,
                         map,
                         command.objectId,
                         (Vector2)command.newValue);
-            case CREATE_ENTITY:
-                EntityActions.createEntity(
+            case CREATE_OBJECT:
+                Actions.createObject(
                         sidePanel,
                         mainView,
                         map,
@@ -127,13 +132,13 @@ public final class EditorState {
     }
 
 
-    private static EditorObject getDefaultGameObject() {
+    public static EditorObject getDefaultGameObject() {
         final Dictionary<ObjectType, GameObject> objectTypeMap = new Hashtable<ObjectType, GameObject>() {
             {
                 put(ObjectType.ENTITY, new Entity(config.baseEntityNames[0],
                         Entity.DEFAULT_COLOUR,
                         Vector2.Zero,
-                        Utils.getBoundingBoxFromTexture(config.getTexture(config.baseEntityNames[0], Entity.class)),
+                        new Rectangle(0, 0, 0, 0),
                         Entity.DEFAULT_MASS,
                         Entity.DEFAULT_HEALTH,
                         AIType.NONE));
@@ -143,6 +148,6 @@ public final class EditorState {
             }
         };
 
-        return new EditorObject(objectTypeMap.get(currentType));
+        return new EditorObject<>(objectTypeMap.get(currentType), true, config);
     }
 }

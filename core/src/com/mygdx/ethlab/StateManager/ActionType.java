@@ -1,7 +1,7 @@
 package com.mygdx.ethlab.StateManager;
 
 public enum ActionType {
-    CREATE_ENTITY,
-    SET_ENTITY_POSITION,
-
+    CREATE_OBJECT,
+    SET_OBJECT_POSITION,
+    SET_OBJECT_TEXTURE,
 }

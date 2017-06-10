@@ -15,6 +15,7 @@ import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.ModeType;
+import com.mygdx.ethlab.UI.EditorObject;
 
 import static com.mygdx.ethlab.UI.SidePanel.utils.*;
 
@@ -33,7 +34,7 @@ public abstract class ObjectEditorTable extends Table {
     public static final float DEFAULT_LABEL_WIDTH = 70;
 
 
-    public ObjectEditorTable(Config config, Skin skin, GameObject o) {
+    public ObjectEditorTable(Config config, Skin skin, EditorObject o) {
         this.config = config;
         init(skin, o);
     }
@@ -51,26 +52,41 @@ public abstract class ObjectEditorTable extends Table {
      * Create a control for each property of an object
      * @param skin The ui texture set to be used
      */
-    private void init(Skin skin, GameObject myObject) {
+    private void init(Skin skin, EditorObject myObject) {
         defaults()
                 .padTop(4)
                 .padLeft(5);
 
-        textureField = addTexturePicker("Texture: ", config.getTextureNames(myObject), myObject.getClass(), myObject.textureName, skin);
-        colourField = addColourPicker("Colour: ", myObject.colour, skin);
-        positionFields = addCoordinatePicker("Position: ", myObject.position, skin);
+        GameObject instance = myObject.instance;
+
+        textureField = addTexturePicker("Texture: ", config.getTextureNames(instance), instance.getClass(), instance.textureName, skin);
+        colourField = addColourPicker("Colour: ", instance.colour, skin);
+        positionFields = addCoordinatePicker("Position: ", instance.position, skin);
 
         addTextFieldCommitInputHandler(positionFields[0], field -> {
             float newX = getFloatFromTextField(field);
-            System.out.println(newX);
             field.setText(String.valueOf(newX));
-            //CommandFactory.setObjectPosition(myObject.id, new Vector2(newX, myObject.position.y), true);
+            CommandFactory.setObjectPosition(myObject.getId(), new Vector2(newX, instance.position.y), true);
         });
         addTextFieldCommitInputHandler(positionFields[1], field -> {
             float newY = getFloatFromTextField(field);
-            System.out.println(newY);
             field.setText(String.valueOf(newY));
-            //CommandFactory.setObjectPosition(myObject.id, new Vector2(myObject.position.x, newY), true);
+            CommandFactory.setObjectPosition(myObject.getId(), new Vector2(instance.position.x, newY), true);
+        });
+
+        textureField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                SelectBox<String> selectWidget = (SelectBox<String>) actor;
+
+                if (EditorState.isMode(ModeType.CREATE)) {
+                    EditorObject focusedObject = EditorState.getFocusedObject();
+                    focusedObject.setTexture(selectWidget.getSelected(), config);
+                    EditorState.setFocusedObject(focusedObject);
+                } else {
+                    CommandFactory.setObjectTexture(myObject.getId(), selectWidget.getSelected(), true);
+                }
+            }
         });
     }
 

@@ -108,7 +108,7 @@ public class MainView {
                 mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
         );
         EditorState.performAction(
-                CommandFactory.addNewEntity(focusedObjectID, focusedObject, false)
+                CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
         );
     }
 
@@ -154,7 +154,8 @@ public class MainView {
     }
 
     public void removeGameObject(EditorObject wrapper) {
-        gameObjectMap.remove(wrapper.getId());
+        // Remove the object from the map and then from the game stage
+        gameObjectMap.remove(wrapper.getId()).remove();
     }
 
     public void setShapes(List<EditorObject<TerrainShape>> gameShapes) {
@@ -248,17 +249,18 @@ public class MainView {
 
     public void updateCameraInput() {
         if (isFocused) {
+            float zoom = camera.zoom * camera.zoom * 2;
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                camera.translate(-DEFAULT_CAMERA_SPEED, 0);
+                camera.translate(-(DEFAULT_CAMERA_SPEED + zoom), 0);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                camera.translate(DEFAULT_CAMERA_SPEED, 0);
+                camera.translate(DEFAULT_CAMERA_SPEED + zoom, 0);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                camera.translate(0, DEFAULT_CAMERA_SPEED);
+                camera.translate(0, DEFAULT_CAMERA_SPEED + zoom);
             }
             if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                camera.translate(0, -DEFAULT_CAMERA_SPEED);
+                camera.translate(0, -(DEFAULT_CAMERA_SPEED + zoom));
             }
             camera.update();
         }

@@ -2,16 +2,19 @@ package com.mygdx.ethlab;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.mygdx.ethlab.StateManager.EditorState;
+import com.mygdx.ethlab.StateManager.ModeType;
 import com.mygdx.ethlab.UI.MainView.MainView;
 import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 
@@ -24,6 +27,10 @@ public class EthLab extends ApplicationAdapter {
 	private Stage uiStage;
 	MainView mainView;
 	EditorMap map;
+
+	private static final float MAX_ZOOM = 4;
+	private static final float MIN_ZOOM = 0.1f;
+	private static final float ZOOM_RATE = 0.1f;
 
 	static {
 		FOCUS_LOST_EVENT.setFocused(false);
@@ -44,7 +51,7 @@ public class EthLab extends ApplicationAdapter {
 		uiStage = new Stage(new StretchViewport(1280, 720));
 
 		mainView = new MainView(camera, gameStage, config);
-		SidePanel sidePanel = initUIStage(skin);
+		SidePanel sidePanel = initUIStage(skin, camera);
 
 		EditorState.init(sidePanel, mainView, map, config);
 	}
@@ -94,7 +101,7 @@ public class EthLab extends ApplicationAdapter {
 	 * @param skin ...
 	 * @return side panel
      */
-	private SidePanel initUIStage(Skin skin) {
+	private SidePanel initUIStage(Skin skin, Camera camera) {
 		//
 		// Side panel
 		//
@@ -150,6 +157,15 @@ public class EthLab extends ApplicationAdapter {
 		uiStage.setKeyboardFocus(mainViewActor);
 
 		Gdx.input.setInputProcessor(uiStage);
+		uiStage.addListener(new InputListener() {
+			public boolean scrolled(InputEvent event, float x, float y, int scrollDirection) {
+				OrthographicCamera orthographicCamera = (OrthographicCamera)camera;
+				orthographicCamera.zoom += scrollDirection * ZOOM_RATE;
+				orthographicCamera.zoom = Math.max(MIN_ZOOM, orthographicCamera.zoom);
+				orthographicCamera.zoom = Math.min(MAX_ZOOM, orthographicCamera.zoom);
+				return true;
+			}
+		});
 
 		return sidePanel;
 	}

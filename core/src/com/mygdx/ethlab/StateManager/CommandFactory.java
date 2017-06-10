@@ -1,17 +1,22 @@
 package com.mygdx.ethlab.StateManager;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.UI.EditorObject;
 
 public final class CommandFactory {
 
-    public static Command addNewEntity(int id, EditorObject newObject, boolean isOriginUI) {
-        return new Command(null, newObject, id, ActionType.CREATE_ENTITY, isOriginUI);
+    public static Command addNewObject(int id, EditorObject newObject, boolean isOriginUI) {
+        return new Command(null, newObject, id, ActionType.CREATE_OBJECT, isOriginUI);
     }
 
-    public static Command setEntityPosition(int id, Vector2 newPosition, boolean isOriginUI) {
-        return new Command(EditorState.getObjectById(id), newPosition, id, ActionType.SET_ENTITY_POSITION, isOriginUI);
+    public static Command setObjectPosition(int id, Vector2 newPosition, boolean isOriginUI) {
+        return new Command(EditorState.getObjectById(id), newPosition, id, ActionType.SET_OBJECT_POSITION, isOriginUI);
+    }
+
+    public static Command setObjectTexture(int id, String newTexture, boolean isOriginUI) {
+        return new Command(EditorState.getObjectById(id), newTexture, id, ActionType.SET_OBJECT_TEXTURE, isOriginUI);
     }
 
     public static class Command {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.AIType;
 import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.UI.EditorObject;
 
 public class EntityEditorTable extends ObjectEditorTable {
     private BoundingBoxPicker boundingBoxPicker;
@@ -12,11 +13,10 @@ public class EntityEditorTable extends ObjectEditorTable {
     private TextField healthField;
     private SelectBox<String> aiField;
 
-    public EntityEditorTable(Config config, Skin skin, Entity e) {
+    public EntityEditorTable(Config config, Skin skin, EditorObject e) {
         super(config, skin, e);
         init(skin, e);
     }
-
 
     public void setEntity(Entity e) {
         setObject(e);
@@ -46,7 +46,8 @@ public class EntityEditorTable extends ObjectEditorTable {
      * Create a control for each property of an entity
      * @param skin The ui texture set to be used
      */
-    private void init(Skin skin, Entity entity) {
+    private void init(Skin skin, EditorObject editorObject) {
+        Entity entity = (Entity)editorObject.instance;
         boundingBoxPicker = new BoundingBoxPicker("Bounds: ", entity.boundingBox, skin);
         massField = addFloatNumberPicker("Mass: ", entity.mass, skin);
         healthField = addFloatNumberPicker("Health: ", entity.health, skin);
