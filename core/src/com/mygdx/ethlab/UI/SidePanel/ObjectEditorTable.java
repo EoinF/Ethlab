@@ -66,12 +66,30 @@ public abstract class ObjectEditorTable extends Table {
         addTextFieldCommitInputHandler(positionFields[0], field -> {
             float newX = getFloatFromTextField(field);
             field.setText(String.valueOf(newX));
-            CommandFactory.setObjectPosition(myObject.getId(), new Vector2(newX, instance.position.y), true);
+
+            Vector2 newPosition = new Vector2(newX, instance.position.y);
+            instance.position = newPosition;
+            updatePosition(myObject.getId(), newPosition);
         });
         addTextFieldCommitInputHandler(positionFields[1], field -> {
             float newY = getFloatFromTextField(field);
             field.setText(String.valueOf(newY));
-            CommandFactory.setObjectPosition(myObject.getId(), new Vector2(instance.position.x, newY), true);
+
+            Vector2 newPosition = new Vector2(instance.position.x, newY);
+            instance.position = newPosition;
+            updatePosition(myObject.getId(), newPosition);
+        });
+
+        colourField.addChangeListener((newColour) -> {
+            if (EditorState.isMode(ModeType.CREATE)) {
+                EditorObject focusedObject = EditorState.getFocusedObject();
+                focusedObject.setColour(newColour);
+                EditorState.setFocusedObject(focusedObject);
+            } else {
+                EditorState.performAction(
+                        CommandFactory.setObjectColour(
+                                myObject.getId(), newColour, true));
+            }
         });
 
         textureField.addListener(new ChangeListener() {
@@ -84,10 +102,26 @@ public abstract class ObjectEditorTable extends Table {
                     focusedObject.setTexture(selectWidget.getSelected(), config);
                     EditorState.setFocusedObject(focusedObject);
                 } else {
-                    CommandFactory.setObjectTexture(myObject.getId(), selectWidget.getSelected(), true);
+                   EditorState.performAction(
+                           CommandFactory.setObjectTexture(
+                                   myObject.getId(), selectWidget.getSelected(), true));
                 }
             }
         });
+
+
+    }
+
+    private void updatePosition(int objectId, Vector2 newPosition) {
+        if (EditorState.isMode(ModeType.CREATE)) {
+            EditorObject focusedObject = EditorState.getFocusedObject();
+            focusedObject.setPosition(newPosition);
+            EditorState.setFocusedObject(focusedObject);
+        } else {
+            EditorState.performAction(
+                    CommandFactory.setObjectPosition(objectId, newPosition, true)
+            );
+        }
     }
 
     SelectBox<String> addTexturePicker(String attrName, String[] textureList, Class<?> objectType, String textureName, Skin skin) {

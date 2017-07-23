@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
+import java.util.function.Consumer;
+
 import static com.mygdx.ethlab.UI.SidePanel.utils.addTextFieldCommitInputHandler;
 import static com.mygdx.ethlab.UI.SidePanel.utils.getByteFromTextField;
 
@@ -14,6 +16,8 @@ public class ColourPicker extends Table {
     private TextField blueField;
     private Image bindedImage;
     private Sprite bindedSprite;
+
+    private Consumer<Color> onChangeListener;
 
     public float getR() {
         return getByteFromTextField(redField) / 255f;
@@ -40,6 +44,8 @@ public class ColourPicker extends Table {
         add(redField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
         add(greenField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
         add(blueField).width(DEFAULT_COLOUR_COMPONENT_WIDTH);
+
+        onChangeListener = (newColor) -> {};
     }
 
     public void setImageBinding(Image bindedImage, Sprite bindedSprite) {
@@ -48,24 +54,30 @@ public class ColourPicker extends Table {
         updateBindedImageColour();
     }
 
+    public void addChangeListener(Consumer<Color> consumer) {
+        this.onChangeListener = this.onChangeListener.andThen(consumer);
+    }
+
     private TextField createColourTextField(int defaultValue, Skin skin) {
         TextField textField = new TextField(String.valueOf(defaultValue), skin);
         addTextFieldCommitInputHandler(textField, field -> {
             int value = getByteFromTextField(field);
             field.setText(String.valueOf(value));
-            updateBindedImageColour();
+            Color newColour = updateBindedImageColour();
+            onChangeListener.accept(newColour);
         });
         textField.setMaxLength(3);
         return textField;
     }
 
-    private void updateBindedImageColour() {
+    private Color updateBindedImageColour() {
         Color newColour = bindedSprite.getColor();
         newColour.r = getR();
         newColour.g = getG();
         newColour.b = getB();
         bindedSprite.setColor(newColour);
         bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
+        return newColour;
     }
 
     public void setValues(Color newColour) {

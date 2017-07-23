@@ -16,9 +16,13 @@ public class SidePanel extends Table {
 
     private static Color SIDEPANEL_COLOUR = new Color(0.1f, 0.1f, 0.1f, 1);
     private CreateModeTable createModeTable;
+    private EditModeTable editModeTable;
 
     public CreateModeTable getCreateModeTable() {
         return createModeTable;
+    }
+    public EditModeTable getEditModeTable() {
+        return editModeTable;
     }
 
     public SidePanel(float width, float height, Config config, Skin skin) {
@@ -60,16 +64,21 @@ public class SidePanel extends Table {
         // Contents of sidebar (Changes based on which mode is selected)
         //
         createModeTable = new CreateModeTable(config, skin);
+        editModeTable = new EditModeTable(config, skin);
         final TriggerModeTable triggerModeTable = new TriggerModeTable(config, skin);
 
         ChangeListener onClickModeButton = new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 createModeTable.setVisible(toolbar.createModeButton.isChecked());
+                editModeTable.setVisible(toolbar.editModeButton.isChecked());
                 triggerModeTable.setVisible(toolbar.triggerModeButton.isChecked());
 
                 if (toolbar.createModeButton.isChecked()) {
                     EditorState.setMode(ModeType.CREATE);
+                }
+                if (toolbar.editModeButton.isChecked()) {
+                    EditorState.setMode(ModeType.EDIT);
                 }
                 if (toolbar.triggerModeButton.isChecked()) {
                     EditorState.setMode(ModeType.TRIGGERS);
@@ -78,6 +87,7 @@ public class SidePanel extends Table {
         };
 
         modeSelectStack.add(createModeTable);
+        modeSelectStack.add(editModeTable);
         modeSelectStack.add(triggerModeTable);
 
         toolbar.createModeButton.addListener(onClickModeButton);

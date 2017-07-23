@@ -1,5 +1,7 @@
 package com.mygdx.ethlab.UI;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
@@ -57,6 +59,14 @@ public class EditorObject<T extends GameObject> {
         if (this.isAutoBoundingBox) {
             setAutoBoundingBox(config);
         }
+    }
+
+    public void setColour(Color newColour) {
+        this.instance.colour = newColour;
+    }
+
+    public void setPosition(Vector2 position) {
+        this.instance.position = position;
     }
 
     public void setTexture(String textureName, Config config) {

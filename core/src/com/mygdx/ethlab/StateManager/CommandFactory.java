@@ -1,5 +1,6 @@
 package com.mygdx.ethlab.StateManager;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.GameObjects.GameObject;
@@ -13,6 +14,10 @@ public final class CommandFactory {
 
     public static Command setObjectPosition(int id, Vector2 newPosition, boolean isOriginUI) {
         return new Command(EditorState.getObjectById(id), newPosition, id, ActionType.SET_OBJECT_POSITION, isOriginUI);
+    }
+
+    public static Command setObjectColour(int id, Color newColour, boolean isOriginUI) {
+        return new Command(EditorState.getObjectById(id), newColour, id, ActionType.SET_OBJECT_COLOUR, isOriginUI);
     }
 
     public static Command setObjectTexture(int id, String newTexture, boolean isOriginUI) {

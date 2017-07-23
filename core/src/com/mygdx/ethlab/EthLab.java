@@ -126,7 +126,6 @@ public class EthLab extends ApplicationAdapter {
 				}
 				// Lose focus of all text fields, etc.
 				uiStage.unfocusAll();
-				System.out.println("unfocus all");
 				uiStage.setKeyboardFocus(mainViewActor);
 				mainView.isFocused = true;
 			}

@@ -115,8 +115,10 @@ public class MainView {
     public void setFocusedObject(EditorObject wrapper) {
         GameObject gameObject = wrapper.instance;
         TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
+
         focusedObjectSprite = new Sprite(reg);
         focusedObjectSprite.setPosition(gameObject.position.x, gameObject.position.y);
+        focusedObjectSprite.setColor(gameObject.colour);
         focusedObjectID = wrapper.getId();
 
         if (gameObject.getClass() == Entity.class) {
@@ -132,6 +134,7 @@ public class MainView {
         TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
         Image image = new Image(new Sprite(reg));
         image.setPosition(gameObject.position.x, gameObject.position.y);
+        image.setColor(gameObject.colour);
         return image;
     }
 
