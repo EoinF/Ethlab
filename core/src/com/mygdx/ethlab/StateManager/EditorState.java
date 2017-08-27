@@ -33,6 +33,11 @@ public final class EditorState {
         mainView.setFocusedObject(editorObject);
     }
 
+    public static void setFocusedObject(int id) {
+        focusedObject = getObjectById(id);
+        mainView.setFocusedObject(focusedObject);
+    }
+
     /*
         The three representations of the current map's state.
         Only 'map' is the source of truth. The others are just for rendering
@@ -64,13 +69,27 @@ public final class EditorState {
     }
 
     public static EditorObject getObjectById(int id) {
-        if (id == focusedObject.getId()) {
+        if (focusedObject != null
+                && id == focusedObject.getId()) {
             return focusedObject;
         } else {
             return map.getObjectById(id);
         }
     }
 
+    public static EditorObject incrementFocusedObject() {
+        focusedObject.setId(getNextIdAndIncrement());
+        return focusedObject;
+    }
+
+    public static void setEditModeObject(int id) {
+        EditorObject wrapper = getObjectById(id);
+        sidePanel.getEditModeTable().selectObject(wrapper);
+    }
+
+    public static void setEditModeObject(EditorObject wrapper) {
+        sidePanel.getEditModeTable().selectObject(wrapper);
+    }
 
     //
     // Editor State interface
@@ -84,6 +103,9 @@ public final class EditorState {
 
         if (newMode == ModeType.CREATE) {
             setFocusedObject(getDefaultGameObject());
+        }
+        else if (newMode == ModeType.EDIT) {
+            setFocusedObject(null);
         }
     }
 

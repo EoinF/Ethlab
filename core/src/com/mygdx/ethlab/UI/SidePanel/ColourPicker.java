@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import java.util.function.Consumer;
 
 import static com.mygdx.ethlab.UI.SidePanel.utils.addTextFieldCommitInputHandler;
-import static com.mygdx.ethlab.UI.SidePanel.utils.getByteFromTextField;
+import static com.mygdx.ethlab.UI.SidePanel.utils.getFloatFromTextField;
 
 public class ColourPicker extends Table {
     private TextField redField;
@@ -20,21 +20,21 @@ public class ColourPicker extends Table {
     private Consumer<Color> onChangeListener;
 
     public float getR() {
-        return getByteFromTextField(redField) / 255f;
+        return getFloatFromTextField(redField);
     }
     public float getG() {
-        return getByteFromTextField(greenField) / 255f;
+        return getFloatFromTextField(greenField);
     }
     public float getB() {
-        return getByteFromTextField(blueField) / 255f;
+        return getFloatFromTextField(blueField);
     }
 
     private static final float DEFAULT_COLOUR_COMPONENT_WIDTH = 42;
 
     public ColourPicker (String attrName, Color defaultColour, Image bindedImage, Sprite bindedSprite, Skin skin) {
-        redField = createColourTextField((int)(defaultColour.r * 255), skin);
-        greenField = createColourTextField((int)(defaultColour.g * 255), skin);
-        blueField = createColourTextField((int)(defaultColour.b * 255), skin);
+        redField = createColourTextField(defaultColour.r, skin);
+        greenField = createColourTextField(defaultColour.g, skin);
+        blueField = createColourTextField(defaultColour.b, skin);
 
         setImageBinding(bindedImage, bindedSprite);
 
@@ -58,15 +58,15 @@ public class ColourPicker extends Table {
         this.onChangeListener = this.onChangeListener.andThen(consumer);
     }
 
-    private TextField createColourTextField(int defaultValue, Skin skin) {
+    private TextField createColourTextField(float defaultValue, Skin skin) {
         TextField textField = new TextField(String.valueOf(defaultValue), skin);
         addTextFieldCommitInputHandler(textField, field -> {
-            int value = getByteFromTextField(field);
+            float value = getFloatFromTextField(field);
             field.setText(String.valueOf(value));
             Color newColour = updateBindedImageColour();
             onChangeListener.accept(newColour);
         });
-        textField.setMaxLength(3);
+        textField.setMaxLength(6);
         return textField;
     }
 

@@ -40,6 +40,8 @@ public abstract class ObjectEditorTable extends Table {
     }
 
     public void setObject(GameObject newValues) {
+        setPosition(newValues.position);
+        colourField.setValues(newValues.colour);
         textureField.setSelected(newValues.textureName);
     }
 

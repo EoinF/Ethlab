@@ -3,8 +3,11 @@ package com.mygdx.ethlab;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -46,6 +49,7 @@ public class EthLab extends ApplicationAdapter {
 		map = EditorMap.loadMap(Gdx.files.internal("levels/1.txt"));
 
 		Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
+
 		Stage gameStage = new Stage(new StretchViewport(1280, 720, camera));
 
 		uiStage = new Stage(new StretchViewport(1280, 720));
@@ -127,14 +131,14 @@ public class EthLab extends ApplicationAdapter {
 				// Lose focus of all text fields, etc.
 				uiStage.unfocusAll();
 				uiStage.setKeyboardFocus(mainViewActor);
-				mainView.isFocused = true;
+				mainView.setIsFocused(true);
 			}
 		});
 		sidePanel.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent e, float x, float y) {
 				// Lose focus of the main view
-				mainView.isFocused = false;
+				mainView.setIsFocused(false);
 			}
 		});
 		mainViewActor.addListener(new FocusListener() {
@@ -144,7 +148,7 @@ public class EthLab extends ApplicationAdapter {
 				// This reverts focus to the main view if we aren't focusing on anything
 				// therefore we are always focused on something
 				if (!focused) {
-					mainView.isFocused = true;
+					mainView.setIsFocused(true);
 				}
 			}
 		});
@@ -152,7 +156,7 @@ public class EthLab extends ApplicationAdapter {
 		uiStage.addActor(mainViewActor);
 
 		// Main view is focused by default
-		mainView.isFocused = true;
+		mainView.setIsFocused(true);
 		uiStage.setKeyboardFocus(mainViewActor);
 
 		Gdx.input.setInputProcessor(uiStage);

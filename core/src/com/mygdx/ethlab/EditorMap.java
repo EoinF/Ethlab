@@ -56,6 +56,21 @@ public class EditorMap {
     }
 
     /**
+     * Update an existing object in the map
+     * @param wrapper The wrapped entity to be updated
+     * @return The id of the updated entity
+     */
+    public void updateEntity(EditorObject wrapper) {
+        EditorObject existingEntity = entities.stream().
+                filter(e -> e.getId() == wrapper.getId())
+                .findFirst()
+                .get();
+
+        entities.set(entities.indexOf(existingEntity), wrapper);
+        addObjectToMap(wrapper);
+    }
+
+    /**
      * Add an object to the map
      * @param wrapper The wrapped item to add to the map
      * @return The id of the added item

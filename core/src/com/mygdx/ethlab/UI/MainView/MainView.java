@@ -33,6 +33,8 @@ import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
+import com.sun.org.apache.xpath.internal.operations.Mod;
+import org.omg.CORBA.CODESET_INCOMPATIBLE;
 
 /**
  The main view is the part of the screen which holds the game world and objects/entities (i.e. the game stage)
@@ -44,7 +46,22 @@ public class MainView {
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
 
-    public boolean isFocused;
+    private boolean isFocused;
+    public void setIsFocused(boolean isFocused) {
+        if (this.isFocused != isFocused) {
+            this.isFocused = isFocused;
+
+            Color tint = isFocused ? Color.WHITE : Color.BLACK;
+
+            polyBatch.setColor(tint);
+            spriteBatch.setColor(tint);
+            for (Integer id : gameObjectMap.keySet()) {
+                Color interpolatedColour = spriteColourMap.get(id).cpy().lerp(tint, 0.5f);
+                gameObjectMap.get(id).setColor(interpolatedColour);
+            }
+        }
+    }
+
     private OrthographicCamera camera;
     private Config config;
 
@@ -60,10 +77,11 @@ public class MainView {
 
     private Map<Integer, Actor> gameObjectMap;
     private Map<Integer, PolygonSprite> gameShapeMap;
+    private Map<Integer, Color> spriteColourMap;
 
     private Sprite focusedObjectSprite;
     private Rectangle focusedObjectBoundingBox;
-    private int focusedObjectID;
+    private Integer focusedObjectID;
 
 
     public MainView(OrthographicCamera camera, Stage gameStage, Config config) {
@@ -80,12 +98,15 @@ public class MainView {
 
         this.gameObjectMap = new HashMap<>();
         this.gameShapeMap = new HashMap<>();
+        this.spriteColourMap = new HashMap<>();
 
 
         rootActor.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if (EditorState.isMode(ModeType.CREATE)) {
                     actCreateMode(x, y);
+                } else if (EditorState.isMode(ModeType.EDIT)) {
+                    actEditMode(x, y);
                 }
                 return true;
             }
@@ -97,36 +118,73 @@ public class MainView {
         updateCameraInput();
     }
 
+    /**
+     * Perform actions when the mouse is clicked in create mode
+     * @param x Mouse x coordinate
+     * @param y Mouse y coordinate
+     */
     private void actCreateMode(float x, float y) {
-        EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
-        Entity focusedEntity = ((Entity)focusedObject.instance);
+        if (isFocused) {
+            EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
+            Entity focusedEntity = ((Entity) focusedObject.instance);
 
+            Vector3 mousePositionInWorld = camera.unproject(new Vector3(x, rootActor.getHeight() - y, 0));
+
+            focusedObject.instance.position = new Vector2(
+                    mousePositionInWorld.x - focusedEntity.boundingBox.getWidth() / 2,
+                    mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
+            );
+            EditorState.performAction(
+                    CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
+            );
+            EditorObject updatedWrapper = EditorState.incrementFocusedObject();
+            setFocusedObject(updatedWrapper);
+        }
+    }
+
+    /**
+     * Perform actions when the mouse is clicked in edit mode
+     * @param x Mouse x coordinate
+     * @param y Mouse y coordinate
+     */
+    private void actEditMode(float x, float y) {
         Vector3 mousePositionInWorld = camera.unproject(new Vector3(x, rootActor.getHeight() - y, 0));
+        Actor selectedActor = gameStage.hit(mousePositionInWorld.x, mousePositionInWorld.y, false);
 
-        focusedObject.instance.position = new Vector2(
-                mousePositionInWorld.x - focusedEntity.boundingBox.getWidth() / 2,
-                mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
-        );
-        EditorState.performAction(
-                CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
-        );
+        if (selectedActor != null) {
+            for (Integer id : gameObjectMap.keySet()) {
+                if (gameObjectMap.get(id).equals(selectedActor)) {
+                    EditorState.setFocusedObject(id);
+                    EditorState.setEditModeObject(id);
+                    break;
+                }
+            }
+        } else {
+            EditorState.setFocusedObject(null);
+            EditorState.setEditModeObject(null);
+        }
     }
 
     public void setFocusedObject(EditorObject wrapper) {
-        GameObject gameObject = wrapper.instance;
-        TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
+        if (wrapper != null) {
+            GameObject gameObject = wrapper.instance;
+            TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
 
-        focusedObjectSprite = new Sprite(reg);
-        focusedObjectSprite.setPosition(gameObject.position.x, gameObject.position.y);
-        focusedObjectSprite.setColor(gameObject.colour);
-        focusedObjectID = wrapper.getId();
+            focusedObjectSprite = new Sprite(reg);
+            focusedObjectSprite.setPosition(gameObject.position.x, gameObject.position.y);
+            focusedObjectSprite.setColor(gameObject.colour);
+            focusedObjectID = wrapper.getId();
 
-        if (gameObject.getClass() == Entity.class) {
-            focusedObjectBoundingBox = ((Entity)gameObject).boundingBox;
+            if (gameObject.getClass() == Entity.class) {
+                focusedObjectBoundingBox = ((Entity) gameObject).boundingBox;
+            } else {
+                float width = focusedObjectSprite.getWidth();
+                float height = focusedObjectSprite.getHeight();
+                focusedObjectBoundingBox = new Rectangle(0, 0, width, height);
+            }
         } else {
-            float width = focusedObjectSprite.getWidth();
-            float height = focusedObjectSprite.getHeight();
-            focusedObjectBoundingBox = new Rectangle(0, 0, width, height);
+            focusedObjectSprite = null;
+            focusedObjectID = -1;
         }
     }
 
@@ -150,10 +208,14 @@ public class MainView {
         Image gameObjectImage = createGameObjectImage(wrapper.instance);
         gameObjectMap.put(wrapper.getId(), gameObjectImage);
         gameStage.addActor(gameObjectImage);
+        spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
     }
 
     public void updateGameObject(EditorObject wrapper) {
-        gameObjectMap.replace(wrapper.getId(), createGameObjectImage(wrapper.instance));
+        gameObjectMap.get(wrapper.getId()).remove();
+        Image updatedImage = createGameObjectImage(wrapper.instance);
+        gameObjectMap.replace(wrapper.getId(), updatedImage);
+        gameStage.addActor(updatedImage);
     }
 
     public void removeGameObject(EditorObject wrapper) {
@@ -162,17 +224,21 @@ public class MainView {
     }
 
     public void setShapes(List<EditorObject<TerrainShape>> gameShapes) {
-        for (EditorObject wrapper: gameShapes) {
-            TerrainShape shape = (TerrainShape)wrapper.instance;
-            TextureRegion reg = config.getTexture(shape.textureName, shape.getClass());
-            gameShapeMap.put(wrapper.getId(), shape.getSprite(reg));
-        }
+        gameShapes.forEach(this::addShape);
+    }
+
+    private void addShape(EditorObject wrapper) {
+        TerrainShape shape = (TerrainShape)wrapper.instance;
+        TextureRegion reg = config.getTexture(shape.textureName, shape.getClass());
+        gameShapeMap.put(wrapper.getId(), shape.getSprite(reg));
+        spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
     }
 
     public void draw() throws Exception {
         gameStage.draw();
 
         polyBatch.setProjectionMatrix(camera.combined);
+        polyBatch.setColor(Color.RED);
         polyBatch.begin();
         for (PolygonSprite shapeSprite: gameShapeMap.values()) {
             shapeSprite.draw(polyBatch);
@@ -186,24 +252,29 @@ public class MainView {
         Vector2 focusedObjectPosition = null;
         // We have a special case for drawing the focused object because we want to retain its original position
         // if the user cancels movement and wants to restore it back to its previous state
+
         if (focusedObjectSprite != null) {
-            Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            if (EditorState.isMode(ModeType.CREATE)) {
+                Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
 
-            Vector2 originalPosition = new Vector2(focusedObjectSprite.getX(), focusedObjectSprite.getY() );
-            focusedObjectPosition = originalPosition;
-            if (this.rootActor.hit(mousePosition.x, mousePosition.y, false) != null) {
-                camera.unproject(mousePosition);
-                focusedObjectPosition = new Vector2(
-                        mousePosition.x - focusedObjectSprite.getRegionWidth() / 2,
-                        mousePosition.y - focusedObjectSprite.getRegionHeight() / 2
-                );
-                focusedObjectSprite.setPosition(focusedObjectPosition.x, focusedObjectPosition.y);
+                Vector2 originalPosition = new Vector2(focusedObjectSprite.getX(), focusedObjectSprite.getY());
+                focusedObjectPosition = originalPosition;
+                if (this.rootActor.hit(mousePosition.x, mousePosition.y, false) != null) {
+                    camera.unproject(mousePosition);
+                    focusedObjectPosition = new Vector2(
+                            mousePosition.x - focusedObjectSprite.getRegionWidth() / 2,
+                            mousePosition.y - focusedObjectSprite.getRegionHeight() / 2
+                    );
+                    focusedObjectSprite.setPosition(focusedObjectPosition.x, focusedObjectPosition.y);
+                }
+
+                focusedObjectSprite.draw(spriteBatch);
+
+                // Restore it back to its original position after drawing
+                focusedObjectSprite.setPosition(originalPosition.x, originalPosition.y);
+            } else if (EditorState.isMode(ModeType.EDIT)) {
+                focusedObjectPosition = new Vector2(focusedObjectSprite.getX(), focusedObjectSprite.getY());
             }
-
-            focusedObjectSprite.draw(spriteBatch);
-
-            // Restore it back to its original position after drawing
-            focusedObjectSprite.setPosition(originalPosition.x, originalPosition.y);
         }
         spriteBatch.end();
 

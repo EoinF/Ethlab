@@ -58,7 +58,7 @@ public class EditModeTable extends Table {
         entityEditorTable.setVisible(false);
         terrainEditorTable.setVisible(false);
 
-        if (wrapper.instance != null) {
+        if (wrapper != null) {
             Class objectClass = wrapper.instance.getClass();
             if (objectClass == Entity.class) {
                 entityEditorTable.setVisible(true);

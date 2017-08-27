@@ -16,6 +16,8 @@ public class Actions {
         GameObject gameObject = wrapper.instance;
 
         gameObject.position = position;
+
+        map.updateEntity(wrapper);
         sidePanel.getCreateModeTable().setObjectPosition(gameObject.position);
         mainView.updateGameObject(wrapper);
     }
@@ -25,8 +27,9 @@ public class Actions {
         GameObject gameObject = wrapper.instance;
 
         gameObject.textureName = textureName;
-        sidePanel.getCreateModeTable().setObjectPosition(gameObject.position);
-        mainView.updateGameObject(wrapper);
+        //map.updateEntity(id, gameObject);
+        //sidePanel.getCreateModeTable().setObjectTexture(gameObject.textureName);
+        //mainView.updateGameObject(wrapper);
     }
 
     public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, int id, EditorObject entity) {

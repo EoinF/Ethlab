@@ -31,33 +31,11 @@ public final class utils {
         });
     }
 
-    public static int getByteFromTextField(TextField field) {
-        int value;
-        String text = field.getText();
-
-        // Check if the text field contains a valid integer
-        if (text.matches("\\d+")) {
-            value = Integer.parseInt(text);
-        } else {
-            value = 0;
-        }
-
-        // Limit to integers between 0 and 255
-        if (value > 255) {
-            return 255;
-        } else if (value < 0) {
-            return 0;
-        }
-        else {
-            return value;
-        }
-    }
-
     public static float getFloatFromTextField(TextField field) {
         float value;
 
         String text = field.getText();
-        if (text.matches("\\d+\\.?\\d+")) {
+        if (text.matches("(\\d+)|(\\d+\\.?\\d+)")) {
             value = Float.parseFloat(text);
         } else {
             value = 0;
