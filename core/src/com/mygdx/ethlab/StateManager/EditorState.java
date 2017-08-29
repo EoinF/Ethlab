@@ -11,9 +11,7 @@ import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 import com.mygdx.ethlab.Utils;
 import com.mygdx.ethlab.StateManager.CommandFactory.Command;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Stack;
+import java.util.*;
 
 public final class EditorState {
 
@@ -22,7 +20,9 @@ public final class EditorState {
 
     private static Stack<Command> completedCommands = new Stack<>();
     private static EditorObject focusedObject;
-    private static Config config;
+    // Record the state of the toolbar objects so when we
+    // switch between types we keep the attributes we selected earlier
+    private static Map<ObjectType, EditorObject> toolbarObjects;
 
     public static EditorObject getFocusedObject() {
         return focusedObject;
@@ -55,7 +55,25 @@ public final class EditorState {
         mainView.setItems(map.items);
         mainView.setShapes(map.shapes);
 
-        config = gameConfig;
+        toolbarObjects = new Hashtable<ObjectType, EditorObject>() {
+            {
+                put(ObjectType.ENTITY, new EditorObject<>(new Entity(gameConfig.baseEntityNames[0],
+                        Entity.DEFAULT_COLOUR,
+                        Vector2.Zero,
+                        new Rectangle(0, 0, 0, 0),
+                        Entity.DEFAULT_MASS,
+                        Entity.DEFAULT_HEALTH,
+                        AIType.NONE)));
+                put(ObjectType.ITEM, new EditorObject<>(new Item()));
+                put(ObjectType.PROP, new EditorObject<>(new Prop()));
+                put(ObjectType.TERRAIN, new EditorObject<>(new TerrainShape()));
+            }
+        };
+
+        for (EditorObject e: toolbarObjects.values()) {
+            sidePanel.getCreateModeTable().setObject(e);
+        }
+
         setType(ObjectType.ENTITY);
         setMode(ModeType.CREATE);
     }
@@ -78,7 +96,8 @@ public final class EditorState {
     }
 
     public static EditorObject incrementFocusedObject() {
-        focusedObject.setId(getNextIdAndIncrement());
+        toolbarObjects.put(currentType, new EditorObject<>(toolbarObjects.get(currentType).instance.copy()));
+        focusedObject = toolbarObjects.get(currentType);
         return focusedObject;
     }
 
@@ -102,7 +121,7 @@ public final class EditorState {
         currentMode = newMode;
 
         if (newMode == ModeType.CREATE) {
-            setFocusedObject(getDefaultGameObject());
+            setFocusedObject(toolbarObjects.get(currentType));
         }
         else if (newMode == ModeType.EDIT) {
             setFocusedObject(null);
@@ -114,6 +133,7 @@ public final class EditorState {
     }
     public static void setType(ObjectType newType) {
         currentType = newType;
+        focusedObject = toolbarObjects.get(currentType);
     }
 
 
@@ -151,25 +171,5 @@ public final class EditorState {
 
     static void undoLast() {
         undoAction(completedCommands.pop());
-    }
-
-
-    public static EditorObject getDefaultGameObject() {
-        final Dictionary<ObjectType, GameObject> objectTypeMap = new Hashtable<ObjectType, GameObject>() {
-            {
-                put(ObjectType.ENTITY, new Entity(config.baseEntityNames[0],
-                        Entity.DEFAULT_COLOUR,
-                        Vector2.Zero,
-                        new Rectangle(0, 0, 0, 0),
-                        Entity.DEFAULT_MASS,
-                        Entity.DEFAULT_HEALTH,
-                        AIType.NONE));
-                put(ObjectType.ITEM, new Item());
-                put(ObjectType.PROP, new Prop());
-                put(ObjectType.TERRAIN, new TerrainShape());
-            }
-        };
-
-        return new EditorObject<>(objectTypeMap.get(currentType), true, config);
     }
 }

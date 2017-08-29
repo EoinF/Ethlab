@@ -212,7 +212,9 @@ public class MainView {
     }
 
     public void updateGameObject(EditorObject wrapper) {
+        // Remove the actor from the stage so it's no longer rendered
         gameObjectMap.get(wrapper.getId()).remove();
+
         Image updatedImage = createGameObjectImage(wrapper.instance);
         gameObjectMap.replace(wrapper.getId(), updatedImage);
         gameStage.addActor(updatedImage);
@@ -238,7 +240,6 @@ public class MainView {
         gameStage.draw();
 
         polyBatch.setProjectionMatrix(camera.combined);
-        polyBatch.setColor(Color.RED);
         polyBatch.begin();
         for (PolygonSprite shapeSprite: gameShapeMap.values()) {
             shapeSprite.draw(polyBatch);

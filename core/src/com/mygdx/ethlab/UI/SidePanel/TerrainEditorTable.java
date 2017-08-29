@@ -9,17 +9,22 @@ import com.mygdx.ethlab.UI.EditorObject;
 public class TerrainEditorTable extends ObjectEditorTable {
 
 
-    public TerrainEditorTable(Config config, Skin skin, EditorObject s) {
-        super(config, skin, s);
-        init(s, skin);
+    public TerrainEditorTable(Config config, Skin skin) {
+        super(config, skin, new TerrainShape());
+        init(skin);
+    }
+
+    public void setShape(TerrainShape shape, int id) {
+        setObject(shape, id);
     }
 
     /**
      * Create a control for each property of an entity
      * @param skin The ui texture set to be used
      */
-    private void init(EditorObject editorObject, Skin skin) {
-        addPointsPicker("Points: ", ((TerrainShape)editorObject.instance).getPoints(), skin);
+    private void init(Skin skin) {
+        TerrainShape shape = new TerrainShape();
+        addPointsPicker("Points: ", shape.getPoints(), skin);
     }
 
     private void addPointsPicker(String attrName, float[] points, Skin skin) {

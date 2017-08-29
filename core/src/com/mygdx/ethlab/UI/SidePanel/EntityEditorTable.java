@@ -13,13 +13,13 @@ public class EntityEditorTable extends ObjectEditorTable {
     private TextField healthField;
     private SelectBox<String> aiField;
 
-    public EntityEditorTable(Config config, Skin skin, EditorObject e) {
-        super(config, skin, e);
-        init(skin, e);
+    public EntityEditorTable(Config config, Skin skin) {
+        super(config, skin, new Entity());
+        init(skin);
     }
 
-    public void setEntity(Entity e) {
-        setObject(e);
+    public void setEntity(Entity e, int id) {
+        setObject(e, id);
         setBounds(e.boundingBox);
         setHealth(String.valueOf(e.health));
         setMass(String.valueOf(e.mass));
@@ -46,8 +46,8 @@ public class EntityEditorTable extends ObjectEditorTable {
      * Create a control for each property of an entity
      * @param skin The ui texture set to be used
      */
-    private void init(Skin skin, EditorObject editorObject) {
-        Entity entity = (Entity)editorObject.instance;
+    private void init(Skin skin) {
+        Entity entity = new Entity();
         boundingBoxPicker = new BoundingBoxPicker("Bounds: ", entity.boundingBox, skin);
         massField = addFloatNumberPicker("Mass: ", entity.mass, skin);
         healthField = addFloatNumberPicker("Health: ", entity.health, skin);

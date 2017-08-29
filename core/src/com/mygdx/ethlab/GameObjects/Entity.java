@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Entity extends GameObject {
+public class Entity extends GameObject  implements Cloneable {
     public static final float DEFAULT_MASS = 1;
     public static final float DEFAULT_HEALTH = 1;
     public static final Rectangle DEFAULT_BOUNDING_BOX = new Rectangle(0, 0, 20, 20);
@@ -29,5 +29,14 @@ public class Entity extends GameObject {
         this.mass = mass;
         this.health = health;
         this.ai = ai;
+    }
+
+    public Entity clone() {
+        try {
+            super.clone();
+        } catch(CloneNotSupportedException e){}
+
+        return new Entity(this.textureName, this.colour, this.position,
+                this.boundingBox, this.mass, this.health, this.ai);
     }
 }

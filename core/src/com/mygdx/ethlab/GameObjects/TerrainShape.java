@@ -34,11 +34,20 @@ public class TerrainShape extends GameObject implements IShape2D {
     }
 
     //Default constructor for json deserialization
-    public TerrainShape() {}
+    public TerrainShape() {
+        this.points = new float[0];
+    }
 
-    public TerrainShape(String texname, float points[]) {
-        this.textureName = texname;
+    public TerrainShape(String textureName, float points[]) {
+        this.textureName = textureName;
         this.points = points;
     }
 
+    public TerrainShape clone() {
+        try {
+            super.clone();
+        } catch(CloneNotSupportedException e){}
+
+        return new TerrainShape(this.textureName, this.points);
+    }
 }

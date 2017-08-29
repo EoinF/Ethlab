@@ -35,7 +35,6 @@ public class Actions {
     public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, int id, EditorObject entity) {
         map.addEntity(entity);
         mainView.addGameObject(entity);
-
-        setObjectPosition(sidePanel, mainView, map, id, entity.instance.position);
+        sidePanel.getCreateModeTable().setObjectPosition(entity.instance.position);
     }
 }

@@ -3,10 +3,7 @@ package com.mygdx.ethlab.UI;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.GameObject;
-import com.mygdx.ethlab.GameObjects.Item;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
+import com.mygdx.ethlab.GameObjects.*;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.Utils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -17,17 +14,8 @@ public class EditorObject<T extends GameObject> {
     public int getId() {
         return id;
     }
-    public void setId(int id) {
-        this.id = id;
-    }
 
     private String name;
-    void setName(String name) {
-        this.name = name;
-    }
-    String getName() {
-        return name;
-    }
 
     private boolean isAutoBoundingBox;
 
@@ -43,13 +31,15 @@ public class EditorObject<T extends GameObject> {
         this.instance = gameObject;
 
         if (objectClass == Entity.class) {
-            this.name = "entity" + EditorState.peekNextId();
+            this.name = "entity" + this.id;
         }
         else if (objectClass == Item.class) {
-            this.name = "item" + EditorState.peekNextId();
+            this.name = "item" + this.id;
         }
         else if (objectClass == TerrainShape.class) {
-            this.name = "shape" + EditorState.peekNextId();
+            this.name = "shape" + this.id;
+        } else if (objectClass == Prop.class) {
+            this.name = "prop" + this.id;
         } else {
             throw (new NotImplementedException());
         }

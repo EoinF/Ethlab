@@ -70,23 +70,10 @@ public class CreateModeTable extends Table {
         //
         //Create the table that controls entity attributes
         //
-        entityEditorTable = new EntityEditorTable(config, skin,
-                new EditorObject<>(
-                        new Entity(config.baseEntityNames[0],
-                                GameObject.DEFAULT_COLOUR,
-                                Vector2.Zero,
-                                Entity.DEFAULT_BOUNDING_BOX,
-                                Entity.DEFAULT_MASS,
-                                Entity.DEFAULT_HEALTH,
-                                AIType.NONE)
-                )
-        );
+        entityEditorTable = new EntityEditorTable(config, skin);
 
-        terrainEditorTable = new TerrainEditorTable(config, skin,
-                new EditorObject<>(
-                        new TerrainShape(config.textureNames[0], new float[]{})
-                )
-        );
+        terrainEditorTable = new TerrainEditorTable(config, skin);
+
         terrainEditorTable
                 .align(Align.topLeft)
                 .setVisible(false);
@@ -124,6 +111,15 @@ public class CreateModeTable extends Table {
         add(editorStack)
                 .expandX()
                 .fillX();
+    }
+
+    public void setObject(EditorObject wrapper) {
+        Class objectClass = wrapper.instance.getClass();
+
+        if (objectClass == Entity.class) {
+            entityEditorTable.setEntity((Entity) wrapper.instance, wrapper.getId());
+        }
+
     }
 
     public void setObjectPosition(Vector2 position) {

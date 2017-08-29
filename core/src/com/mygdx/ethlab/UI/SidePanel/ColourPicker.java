@@ -75,7 +75,6 @@ public class ColourPicker extends Table {
         newColour.r = getR();
         newColour.g = getG();
         newColour.b = getB();
-        bindedSprite.setColor(newColour);
         bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
         return newColour;
     }

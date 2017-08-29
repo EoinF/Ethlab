@@ -9,13 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
+
+import java.util.function.Consumer;
 
 import static com.mygdx.ethlab.UI.SidePanel.utils.*;
 
@@ -29,17 +30,20 @@ public abstract class ObjectEditorTable extends Table {
     private ColourPicker colourField;
     private TextField[] positionFields;
 
+    private int id;
+
     public static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
     public static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
     public static final float DEFAULT_LABEL_WIDTH = 70;
 
 
-    public ObjectEditorTable(Config config, Skin skin, EditorObject o) {
+    public ObjectEditorTable(Config config, Skin skin, GameObject gameObject) {
         this.config = config;
-        init(skin, o);
+        init(skin, gameObject);
     }
 
-    public void setObject(GameObject newValues) {
+    public void setObject(GameObject newValues, int id) {
+        this.id = id;
         setPosition(newValues.position);
         colourField.setValues(newValues.colour);
         textureField.setSelected(newValues.textureName);
@@ -54,32 +58,31 @@ public abstract class ObjectEditorTable extends Table {
      * Create a control for each property of an object
      * @param skin The ui texture set to be used
      */
-    private void init(Skin skin, EditorObject myObject) {
+    private void init(Skin skin, GameObject gameObject) {
         defaults()
                 .padTop(4)
                 .padLeft(5);
 
-        GameObject instance = myObject.instance;
-
-        textureField = addTexturePicker("Texture: ", config.getTextureNames(instance), instance.getClass(), instance.textureName, skin);
-        colourField = addColourPicker("Colour: ", instance.colour, skin);
-        positionFields = addCoordinatePicker("Position: ", instance.position, skin);
+        textureField = addTexturePicker("Texture: ",
+                config.getTextureNames(gameObject), gameObject.getClass(), gameObject.textureName, skin);
+        colourField = addColourPicker("Colour: ", gameObject.colour, skin);
+        positionFields = addCoordinatePicker("Position: ", gameObject.position, skin);
 
         addTextFieldCommitInputHandler(positionFields[0], field -> {
             float newX = getFloatFromTextField(field);
             field.setText(String.valueOf(newX));
 
-            Vector2 newPosition = new Vector2(newX, instance.position.y);
-            instance.position = newPosition;
-            updatePosition(myObject.getId(), newPosition);
+            Vector2 newPosition = new Vector2(newX, gameObject.position.y);
+            gameObject.position = newPosition;
+            updatePosition(this.id, newPosition);
         });
         addTextFieldCommitInputHandler(positionFields[1], field -> {
             float newY = getFloatFromTextField(field);
             field.setText(String.valueOf(newY));
 
-            Vector2 newPosition = new Vector2(instance.position.x, newY);
-            instance.position = newPosition;
-            updatePosition(myObject.getId(), newPosition);
+            Vector2 newPosition = new Vector2(gameObject.position.x, newY);
+            gameObject.position = newPosition;
+            updatePosition(this.id, newPosition);
         });
 
         colourField.addChangeListener((newColour) -> {
@@ -90,24 +93,28 @@ public abstract class ObjectEditorTable extends Table {
             } else {
                 EditorState.performAction(
                         CommandFactory.setObjectColour(
-                                myObject.getId(), newColour, true));
+                                this.id, newColour, true));
             }
         });
+
+        // This callback needs to be declared outside the ChangeListener class
+        // because we need access to the scope of the ObjectEditorTable for the id
+        Consumer<SelectBox<String>> onChangeTexture = (selectWidget) -> {
+            if (EditorState.isMode(ModeType.CREATE)) {
+                EditorObject focusedObject = EditorState.getFocusedObject();
+                focusedObject.setTexture(selectWidget.getSelected(), config);
+                EditorState.setFocusedObject(focusedObject);
+            } else {
+                EditorState.performAction(
+                        CommandFactory.setObjectTexture(
+                                this.id, selectWidget.getSelected(), true));
+            }
+        };
 
         textureField.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                SelectBox<String> selectWidget = (SelectBox<String>) actor;
-
-                if (EditorState.isMode(ModeType.CREATE)) {
-                    EditorObject focusedObject = EditorState.getFocusedObject();
-                    focusedObject.setTexture(selectWidget.getSelected(), config);
-                    EditorState.setFocusedObject(focusedObject);
-                } else {
-                   EditorState.performAction(
-                           CommandFactory.setObjectTexture(
-                                   myObject.getId(), selectWidget.getSelected(), true));
-                }
+                onChangeTexture.accept((SelectBox<String>) actor);
             }
         });
 
