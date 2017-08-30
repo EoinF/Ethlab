@@ -32,9 +32,13 @@ public class Actions {
         //mainView.updateGameObject(wrapper);
     }
 
-    public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, int id, EditorObject entity) {
+    public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, EditorObject entity) {
         map.addEntity(entity);
         mainView.addGameObject(entity);
         sidePanel.getCreateModeTable().setObjectPosition(entity.instance.position);
+    }
+    public static void removeObject(MainView mainView, EditorMap map, EditorObject entity) {
+        map.removeEntity(entity);
+        mainView.removeGameObject(entity);
     }
 }

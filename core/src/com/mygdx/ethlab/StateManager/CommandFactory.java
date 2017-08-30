@@ -11,6 +11,10 @@ public final class CommandFactory {
         return new Command(null, newObject, id, ActionType.CREATE_OBJECT, isOriginUI);
     }
 
+    public static Command removeObject(int id, boolean isOriginUI) {
+        return new Command(EditorState.getObjectById(id), null, id, ActionType.REMOVE_OBJECT, isOriginUI);
+    }
+
     public static Command setObjectPosition(int id, Vector2 newPosition, boolean isOriginUI) {
         return new Command(EditorState.getObjectById(id), newPosition, id, ActionType.SET_OBJECT_POSITION, isOriginUI);
     }

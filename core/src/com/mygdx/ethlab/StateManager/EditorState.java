@@ -47,14 +47,24 @@ public final class EditorState {
     private static MainView mainView;
     private static EditorMap map;
 
-    public static void init(SidePanel _sidePanel, MainView _mainView, EditorMap _map, Config gameConfig) {
-        sidePanel = _sidePanel;
-        mainView = _mainView;
+    public static EditorMap getMap() {
+        return map;
+    }
+
+    public static void setMap(EditorMap _map) {
         map = _map;
 
+        mainView.reset();
         mainView.setEntities(map.entities);
         mainView.setItems(map.items);
         mainView.setShapes(map.shapes);
+    }
+
+    public static void init(SidePanel _sidePanel, MainView _mainView, EditorMap _map, Config gameConfig) {
+        sidePanel = _sidePanel;
+        mainView = _mainView;
+
+        setMap(_map);
 
         toolbarObjects = new Hashtable<ObjectType, EditorObject>() {
             {
@@ -82,9 +92,6 @@ public final class EditorState {
     private static int idGenerator = 0;
     public static int getNextIdAndIncrement() {
         return idGenerator++;
-    }
-    public static int peekNextId() {
-        return idGenerator;
     }
 
     public static EditorObject getObjectById(int id) {
@@ -147,13 +154,20 @@ public final class EditorState {
                         map,
                         command.objectId,
                         (Vector2)command.newValue);
+                break;
             case CREATE_OBJECT:
                 Actions.createObject(
                         sidePanel,
                         mainView,
                         map,
-                        command.objectId,
                         (EditorObject) command.newValue);
+                break;
+            case REMOVE_OBJECT:
+                Actions.removeObject(
+                        mainView,
+                        map,
+                        (EditorObject) command.previousState);
+                break;
         }
 
         // Save the commands that originate from the UI

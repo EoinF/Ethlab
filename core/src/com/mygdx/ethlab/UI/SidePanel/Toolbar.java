@@ -1,11 +1,21 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Json;
 import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.EditorMap;
+import com.mygdx.ethlab.StateManager.EditorState;
+
+import javax.swing.*;
 
 /**
  * Created by Eoin on 03/06/2015.
@@ -36,6 +46,31 @@ public class Toolbar extends Table{
         //newMap.setFillParent(true);
         TextButton loadMap = new TextButton("Load", skin);
         TextButton saveMap = new TextButton("Save", skin);
+
+        loadMap.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                JFileChooser fileChooser = new JFileChooser("core\\assets");
+                int value = fileChooser.showOpenDialog(null);
+                if (value == JFileChooser.APPROVE_OPTION) {
+                    EditorMap map = EditorMap.loadMap(new FileHandle(fileChooser.getSelectedFile()));
+                    EditorState.setMap(map);
+                }
+            }
+        });
+
+        saveMap.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                JFileChooser fileChooser = new JFileChooser("core\\assets");
+                int value = fileChooser.showSaveDialog(null);
+                if (value == JFileChooser.APPROVE_OPTION) {
+                    EditorMap map = EditorState.getMap();
+                    Json json = new Json();
+                    json.toJson(map, new FileHandle(fileChooser.getSelectedFile()));
+                }
+            }
+        });
 
         dataRow.add(newMap);
         dataRow.add(loadMap);

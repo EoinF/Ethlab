@@ -54,6 +54,15 @@ public class EditorMap {
         entities.add(wrapper);
         addObjectToMap(wrapper);
     }
+    /**
+     * Removes an object from the map
+     * @param wrapper The wrapped entity to be removed to the map
+     * @return The id of the added entity
+     */
+    public void removeEntity(EditorObject wrapper) {
+        entities.remove(wrapper);
+        removeObjectFromMap(wrapper);
+    }
 
     /**
      * Update an existing object in the map
@@ -82,5 +91,8 @@ public class EditorMap {
 
     private void addObjectToMap(EditorObject wrapper) {
         editorObjectMap.put(wrapper.getId(), wrapper);
+    }
+    private void removeObjectFromMap(EditorObject wrapper) {
+        editorObjectMap.remove(wrapper.getId());
     }
 }

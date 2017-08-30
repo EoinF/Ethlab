@@ -27,6 +27,7 @@ import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
+import javafx.scene.input.MouseButton;
 
 /**
  The main view is the part of the screen which holds the game world and objects/entities (i.e. the game stage)
@@ -97,9 +98,9 @@ public class MainView {
         rootActor.addListener(new InputListener() {
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
                 if (EditorState.isMode(ModeType.CREATE)) {
-                    actCreateMode(x, y);
+                    actCreateMode(x, y, button);
                 } else if (EditorState.isMode(ModeType.EDIT)) {
-                    actEditMode(x, y);
+                    actEditMode(x, y, button);
                 }
                 return true;
             }
@@ -116,7 +117,7 @@ public class MainView {
      * @param x Mouse x coordinate
      * @param y Mouse y coordinate
      */
-    private void actCreateMode(float x, float y) {
+    private void actCreateMode(float x, float y, int mouseButton) {
         if (isFocused) {
             EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
             Entity focusedEntity = ((Entity) focusedObject.instance);
@@ -127,11 +128,14 @@ public class MainView {
                     mousePositionInWorld.x - focusedEntity.boundingBox.getWidth() / 2,
                     mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
             );
-            EditorState.performAction(
-                    CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
-            );
-            EditorObject updatedWrapper = EditorState.incrementFocusedObject();
-            setFocusedObject(updatedWrapper);
+
+            if (mouseButton == Input.Buttons.LEFT) {
+                EditorState.performAction(
+                        CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
+                );
+                EditorObject updatedWrapper = EditorState.incrementFocusedObject();
+                setFocusedObject(updatedWrapper);
+            }
         }
     }
 
@@ -140,15 +144,19 @@ public class MainView {
      * @param x Mouse x coordinate
      * @param y Mouse y coordinate
      */
-    private void actEditMode(float x, float y) {
+    private void actEditMode(float x, float y, int mouseButton) {
         Vector3 mousePositionInWorld = camera.unproject(new Vector3(x, rootActor.getHeight() - y, 0));
         Actor selectedActor = gameStage.hit(mousePositionInWorld.x, mousePositionInWorld.y, false);
 
         if (selectedActor != null) {
             for (Integer id : gameObjectMap.keySet()) {
                 if (gameObjectMap.get(id).equals(selectedActor)) {
-                    EditorState.setFocusedObject(id);
-                    EditorState.setEditModeObject(id);
+                    if (mouseButton == Input.Buttons.LEFT) {
+                        EditorState.setFocusedObject(id);
+                        EditorState.setEditModeObject(id);
+                    } else if (mouseButton == Input.Buttons.RIGHT) {
+                        EditorState.performAction(CommandFactory.removeObject(id, false));
+                    }
                     break;
                 }
             }
@@ -156,6 +164,13 @@ public class MainView {
             EditorState.setFocusedObject(null);
             EditorState.setEditModeObject(null);
         }
+    }
+
+    public void reset() {
+        gameObjectMap.values().forEach(Actor::remove);
+        this.gameObjectMap.clear();
+        this.gameShapeMap.clear();
+        this.spriteColourMap.clear();
     }
 
     public void setFocusedObject(EditorObject wrapper) {
