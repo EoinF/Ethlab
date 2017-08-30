@@ -1,15 +1,11 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.AIType;
 import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.GameObject;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
-import com.mygdx.ethlab.StateManager.ObjectType;
+import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.UI.EditorObject;
 
 public class EditModeTable extends Table {

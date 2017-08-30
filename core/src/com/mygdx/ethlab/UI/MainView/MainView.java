@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -14,16 +13,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
@@ -31,10 +25,8 @@ import com.mygdx.ethlab.GameObjects.Item;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
-import com.mygdx.ethlab.StateManager.ModeType;
+import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
 
 /**
  The main view is the part of the screen which holds the game world and objects/entities (i.e. the game stage)
@@ -45,18 +37,19 @@ public class MainView {
     private PolygonSpriteBatch polyBatch;
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
+    private static final Color opaqueColour = new Color(1, 1, 1, 0.5f);
 
     private boolean isFocused;
     public void setIsFocused(boolean isFocused) {
         if (this.isFocused != isFocused) {
             this.isFocused = isFocused;
 
-            Color tint = isFocused ? Color.WHITE : Color.BLACK;
+            Color tint = isFocused ? Color.WHITE : opaqueColour;
 
             polyBatch.setColor(tint);
             spriteBatch.setColor(tint);
             for (Integer id : gameObjectMap.keySet()) {
-                Color interpolatedColour = spriteColourMap.get(id).cpy().lerp(tint, 0.5f);
+                Color interpolatedColour = spriteColourMap.get(id).cpy().mul(tint);
                 gameObjectMap.get(id).setColor(interpolatedColour);
             }
         }

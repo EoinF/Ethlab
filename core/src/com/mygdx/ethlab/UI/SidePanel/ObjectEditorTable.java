@@ -1,19 +1,14 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
-import com.mygdx.ethlab.StateManager.ModeType;
+import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
 
 import static com.mygdx.ethlab.UI.SidePanel.utils.*;

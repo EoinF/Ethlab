@@ -5,10 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.EditorMap;
 import com.mygdx.ethlab.GameObjects.*;
+import com.mygdx.ethlab.StateManager.enums.ModeType;
+import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.UI.EditorObject;
 import com.mygdx.ethlab.UI.MainView.MainView;
 import com.mygdx.ethlab.UI.SidePanel.SidePanel;
-import com.mygdx.ethlab.Utils;
 import com.mygdx.ethlab.StateManager.CommandFactory.Command;
 
 import java.util.*;
@@ -63,10 +64,10 @@ public final class EditorState {
                         new Rectangle(0, 0, 0, 0),
                         Entity.DEFAULT_MASS,
                         Entity.DEFAULT_HEALTH,
-                        AIType.NONE)));
-                put(ObjectType.ITEM, new EditorObject<>(new Item()));
-                put(ObjectType.PROP, new EditorObject<>(new Prop()));
-                put(ObjectType.TERRAIN, new EditorObject<>(new TerrainShape()));
+                        AIType.NONE), true, gameConfig));
+                put(ObjectType.ITEM, new EditorObject<>(new Item(), true, gameConfig));
+                put(ObjectType.PROP, new EditorObject<>(new Prop(), true, gameConfig));
+                put(ObjectType.TERRAIN, new EditorObject<>(new TerrainShape(), true, gameConfig));
             }
         };
 

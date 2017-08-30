@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.StateManager.EditorState;
-import com.mygdx.ethlab.StateManager.ModeType;
+import com.mygdx.ethlab.StateManager.enums.ModeType;
 
 public class SidePanel extends Table {
 

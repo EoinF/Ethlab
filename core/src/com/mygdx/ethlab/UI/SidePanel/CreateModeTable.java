@@ -8,14 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.AIType;
 import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.GameObject;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
-import com.mygdx.ethlab.StateManager.ObjectType;
+import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
 
 public class CreateModeTable extends Table {
 

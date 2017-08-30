@@ -1,9 +1,8 @@
 package com.mygdx.ethlab.StateManager;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.StateManager.enums.ActionType;
 import com.mygdx.ethlab.UI.EditorObject;
 
 public final class CommandFactory {
