@@ -14,8 +14,6 @@ public class ColourPicker extends Table {
     private TextField redField;
     private TextField greenField;
     private TextField blueField;
-    private Image bindedImage;
-    private Sprite bindedSprite;
 
     private Consumer<Color> onChangeListener;
 
@@ -29,14 +27,16 @@ public class ColourPicker extends Table {
         return getFloatFromTextField(blueField);
     }
 
+    public Color getColour() {
+        return new Color(getR(), getG(), getB(), 1);
+    }
+
     private static final float DEFAULT_COLOUR_COMPONENT_WIDTH = 42;
 
-    public ColourPicker (String attrName, Color defaultColour, Image bindedImage, Sprite bindedSprite, Skin skin) {
+    public ColourPicker (String attrName, Color defaultColour, Skin skin) {
         redField = createColourTextField(defaultColour.r, skin);
         greenField = createColourTextField(defaultColour.g, skin);
         blueField = createColourTextField(defaultColour.b, skin);
-
-        setImageBinding(bindedImage, bindedSprite);
 
         Label label = new Label(attrName, skin);
 
@@ -48,12 +48,6 @@ public class ColourPicker extends Table {
         onChangeListener = (newColor) -> {};
     }
 
-    public void setImageBinding(Image bindedImage, Sprite bindedSprite) {
-        this.bindedImage = bindedImage;
-        this.bindedSprite = bindedSprite;
-        updateBindedImageColour();
-    }
-
     public void addChangeListener(Consumer<Color> consumer) {
         this.onChangeListener = this.onChangeListener.andThen(consumer);
     }
@@ -63,20 +57,11 @@ public class ColourPicker extends Table {
         addTextFieldCommitInputHandler(textField, field -> {
             float value = getFloatFromTextField(field);
             field.setText(String.valueOf(value));
-            Color newColour = updateBindedImageColour();
+            Color newColour = new Color(getR(), getG(), getB(), 1);
             onChangeListener.accept(newColour);
         });
         textField.setMaxLength(6);
         return textField;
-    }
-
-    private Color updateBindedImageColour() {
-        Color newColour = bindedSprite.getColor();
-        newColour.r = getR();
-        newColour.g = getG();
-        newColour.b = getB();
-        bindedImage.setDrawable(new SpriteDrawable(bindedSprite));
-        return newColour;
     }
 
     public void setValues(Color newColour) {

@@ -1,8 +1,9 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.function.Consumer;
 

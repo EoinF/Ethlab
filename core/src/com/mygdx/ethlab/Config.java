@@ -21,6 +21,7 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class Config {
+
     public String[] textureNames;
     public Texture[] textureValues;
     private Dictionary<String, Texture> textureMap;
@@ -94,6 +95,9 @@ public class Config {
         String fullName;
 
         if (type == Entity.class) {
+            if (textureName == null) {
+                textureName = baseEntityNames[0];
+            }
             fullName = "Entity/" + textureName + "/Idle";
             r = atlas.findRegion(fullName);
         }
@@ -127,10 +131,10 @@ public class Config {
         return r;
     }
 
-    public String[] getTextureNames(GameObject object) {
-        if (object instanceof Entity) {
+    public String[] getTextureNames(Class<?> type) {
+        if (type == Entity.class) {
             return baseEntityNames;
-        } else if (object instanceof TerrainShape) {
+        } else if (type == TerrainShape.class) {
             return textureNames;
         } else {
             return textureNames;

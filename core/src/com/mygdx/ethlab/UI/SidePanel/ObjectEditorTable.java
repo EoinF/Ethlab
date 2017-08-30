@@ -16,18 +16,13 @@ import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
 
-import java.util.function.Consumer;
-
 import static com.mygdx.ethlab.UI.SidePanel.utils.*;
 
 public abstract class ObjectEditorTable extends Table {
-    Config config;
+    private Config config;
 
-    private Image textureDisplay;
-    private Sprite textureSprite;
-
-    private SelectBox<String> textureField;
     private ColourPicker colourField;
+    private TexturePicker textureField;
     private TextField[] positionFields;
 
     private int id;
@@ -46,12 +41,17 @@ public abstract class ObjectEditorTable extends Table {
         this.id = id;
         setPosition(newValues.position);
         colourField.setValues(newValues.colour);
-        textureField.setSelected(newValues.textureName);
+        setTexture(newValues.textureName, newValues.getClass());
     }
 
     public void setPosition(Vector2 position) {
         positionFields[0].setText(String.valueOf(position.x));
         positionFields[1].setText(String.valueOf(position.y));
+    }
+
+    public void setTexture(String textureName, Class<?> objectType) {
+        textureField.setTexture(textureName, config, objectType);
+        textureField.setColour(colourField.getColour());
     }
 
     /**
@@ -64,7 +64,7 @@ public abstract class ObjectEditorTable extends Table {
                 .padLeft(5);
 
         textureField = addTexturePicker("Texture: ",
-                config.getTextureNames(gameObject), gameObject.getClass(), gameObject.textureName, skin);
+                config.getTextureNames(gameObject.getClass()), gameObject.getClass(), gameObject.textureName, skin);
         colourField = addColourPicker("Colour: ", gameObject.colour, skin);
         positionFields = addCoordinatePicker("Position: ", gameObject.position, skin);
 
@@ -95,30 +95,21 @@ public abstract class ObjectEditorTable extends Table {
                         CommandFactory.setObjectColour(
                                 this.id, newColour, true));
             }
+            textureField.setColour(newColour);
         });
 
-        // This callback needs to be declared outside the ChangeListener class
-        // because we need access to the scope of the ObjectEditorTable for the id
-        Consumer<SelectBox<String>> onChangeTexture = (selectWidget) -> {
+        textureField.addChangeListener((newTexture) -> {
             if (EditorState.isMode(ModeType.CREATE)) {
                 EditorObject focusedObject = EditorState.getFocusedObject();
-                focusedObject.setTexture(selectWidget.getSelected(), config);
+                focusedObject.setTexture(newTexture, config);
                 EditorState.setFocusedObject(focusedObject);
             } else {
                 EditorState.performAction(
                         CommandFactory.setObjectTexture(
-                                this.id, selectWidget.getSelected(), true));
+                                this.id, newTexture, true));
             }
-        };
-
-        textureField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                onChangeTexture.accept((SelectBox<String>) actor);
-            }
+            textureField.setColour(colourField.getColour());
         });
-
-
     }
 
     private void updatePosition(int objectId, Vector2 newPosition) {
@@ -133,41 +124,15 @@ public abstract class ObjectEditorTable extends Table {
         }
     }
 
-    SelectBox<String> addTexturePicker(String attrName, String[] textureList, Class<?> objectType, String textureName, Skin skin) {
-        TextureRegion tex = config.getTexture(textureName, objectType);
-        textureSprite = new Sprite(tex);
-        textureDisplay = new Image(textureSprite);
+    TexturePicker addTexturePicker(String attrName, String[] textureList, Class<?> objectType, String textureName, Skin skin) {
+        TexturePicker texturePicker = new TexturePicker(attrName, textureName, textureList, objectType, config, skin);
 
-        SelectBox<String> _textureField = addSelectBox(attrName, textureName, textureList, skin);
-
-        _textureField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //Update the texture being displayed, when a new one is selected
-                SelectBox<String> selectWidget = (SelectBox<String>) actor;
-                TextureRegion tex = config.getTexture(selectWidget.getSelected(), objectType);
-                textureSprite = new Sprite(tex);
-                textureDisplay.setDrawable(new SpriteDrawable(textureSprite));
-                colourField.setImageBinding(textureDisplay, textureSprite);
-            }
-        });
-        row();
-
-        //
-        //One row to display the selected texture
-        //
-        Table textureDisplayContainer = new Table();
-        SidePanel.setBackgroundColour(textureDisplayContainer, Color.GRAY);
-        textureDisplayContainer.add(textureDisplay)
-            .padTop(10)
-            .padBottom(10);
-        add(textureDisplayContainer)
+        add(texturePicker)
                 .colspan(2)
                 .fillX()
-                .expandX()
-                .pad(10);
+                .expandX();
         row();
-        return _textureField;
+        return texturePicker;
     }
 
     TextField addFloatNumberPicker(String attrName, float defaultNumber, Skin skin) {
@@ -186,7 +151,7 @@ public abstract class ObjectEditorTable extends Table {
     }
 
     ColourPicker addColourPicker(String attrName, Color defaultColour, Skin skin) {
-        ColourPicker colourPickerTable = new ColourPicker(attrName, defaultColour, textureDisplay, textureSprite, skin);
+        ColourPicker colourPickerTable = new ColourPicker(attrName, defaultColour, skin);
         colourPickerTable.align(Align.left);
         colourPickerTable
                 .defaults()
