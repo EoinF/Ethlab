@@ -1,5 +1,6 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -122,6 +123,25 @@ public class CreateModeTable extends Table {
         switch (EditorState.getType()) {
             case ENTITY:
                 entityEditorTable.setPosition(position);
+                break;
+            default:
+                throw new RuntimeException("Unhandled object type: " + EditorState.getType());
+        }
+    }
+    public void setObjectTexture(String textureName) {
+        switch (EditorState.getType()) {
+            case ENTITY:
+                entityEditorTable.setTexture(textureName, Entity.class);
+                break;
+            default:
+                throw new RuntimeException("Unhandled object type: " + EditorState.getType());
+        }
+    }
+
+    public void setObjectColour(Color newColour) {
+        switch (EditorState.getType()) {
+            case ENTITY:
+                entityEditorTable.setColour(newColour);
                 break;
             default:
                 throw new RuntimeException("Unhandled object type: " + EditorState.getType());

@@ -1,5 +1,6 @@
 package com.mygdx.ethlab.StateManager;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.ethlab.Config;
@@ -145,7 +146,7 @@ public final class EditorState {
     }
 
 
-    public static void performAction(Command command) {
+    public static void performAction(Command command, Config gameConfig) {
         switch(command.actionType) {
             case SET_OBJECT_POSITION:
                 Actions.setObjectPosition(
@@ -154,6 +155,23 @@ public final class EditorState {
                         map,
                         command.objectId,
                         (Vector2)command.newValue);
+                break;
+            case SET_OBJECT_COLOUR:
+                Actions.setObjectColour(
+                        sidePanel,
+                        mainView,
+                        map,
+                        command.objectId,
+                        (Color)command.newValue);
+                break;
+            case SET_OBJECT_TEXTURE:
+                Actions.setObjectTexture(
+                        sidePanel,
+                        mainView,
+                        map,
+                        command.objectId,
+                        (String)command.newValue,
+                        gameConfig);
                 break;
             case CREATE_OBJECT:
                 Actions.createObject(

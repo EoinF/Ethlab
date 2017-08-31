@@ -49,6 +49,11 @@ public abstract class ObjectEditorTable extends Table {
         textureField.setColour(colourField.getColour());
     }
 
+    public void setColour(Color newColour) {
+        colourField.setValues(newColour);
+        textureField.setColour(newColour);
+    }
+
     /**
      * Create a control for each property of an object
      * @param skin The ui texture set to be used
@@ -88,7 +93,7 @@ public abstract class ObjectEditorTable extends Table {
             } else {
                 EditorState.performAction(
                         CommandFactory.setObjectColour(
-                                this.id, newColour, true));
+                                this.id, newColour, true), config);
             }
             textureField.setColour(newColour);
         });
@@ -101,7 +106,7 @@ public abstract class ObjectEditorTable extends Table {
             } else {
                 EditorState.performAction(
                         CommandFactory.setObjectTexture(
-                                this.id, newTexture, true));
+                                this.id, newTexture, true), config);
             }
             textureField.setColour(colourField.getColour());
         });
@@ -114,7 +119,7 @@ public abstract class ObjectEditorTable extends Table {
             EditorState.setFocusedObject(focusedObject);
         } else {
             EditorState.performAction(
-                    CommandFactory.setObjectPosition(objectId, newPosition, true)
+                    CommandFactory.setObjectPosition(objectId, newPosition, true), config
             );
         }
     }

@@ -131,7 +131,7 @@ public class MainView {
 
             if (mouseButton == Input.Buttons.LEFT) {
                 EditorState.performAction(
-                        CommandFactory.addNewObject(focusedObjectID, focusedObject, false)
+                        CommandFactory.addNewObject(focusedObjectID, focusedObject, false), config
                 );
                 EditorObject updatedWrapper = EditorState.incrementFocusedObject();
                 setFocusedObject(updatedWrapper);
@@ -155,7 +155,7 @@ public class MainView {
                         EditorState.setFocusedObject(id);
                         EditorState.setEditModeObject(id);
                     } else if (mouseButton == Input.Buttons.RIGHT) {
-                        EditorState.performAction(CommandFactory.removeObject(id, false));
+                        EditorState.performAction(CommandFactory.removeObject(id, false), config);
                     }
                     break;
                 }
