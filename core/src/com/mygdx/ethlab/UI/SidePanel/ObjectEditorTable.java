@@ -70,18 +70,18 @@ public abstract class ObjectEditorTable extends Table {
 
         addTextFieldCommitInputHandler(positionFields[0], field -> {
             float newX = getFloatFromTextField(field);
+            float oldY = getFloatFromTextField(positionFields[1]);
             field.setText(String.valueOf(newX));
 
-            Vector2 newPosition = new Vector2(newX, gameObject.position.y);
-            gameObject.position = newPosition;
+            Vector2 newPosition = new Vector2(newX, oldY);
             updatePosition(this.id, newPosition);
         });
         addTextFieldCommitInputHandler(positionFields[1], field -> {
             float newY = getFloatFromTextField(field);
+            float oldX = getFloatFromTextField(positionFields[0]);
             field.setText(String.valueOf(newY));
 
-            Vector2 newPosition = new Vector2(gameObject.position.x, newY);
-            gameObject.position = newPosition;
+            Vector2 newPosition = new Vector2(oldX, newY);
             updatePosition(this.id, newPosition);
         });
 

@@ -133,7 +133,7 @@ public class MainView {
                 EditorState.performAction(
                         CommandFactory.addNewObject(focusedObjectID, focusedObject, false), config
                 );
-                EditorObject updatedWrapper = EditorState.incrementFocusedObject();
+                EditorObject updatedWrapper = EditorState.incrementFocusedObject(config);
                 setFocusedObject(updatedWrapper);
             }
         }

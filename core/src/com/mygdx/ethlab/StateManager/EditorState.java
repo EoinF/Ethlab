@@ -95,6 +95,15 @@ public final class EditorState {
         return idGenerator++;
     }
 
+    public static void updateObject(EditorObject wrapper) {
+        if (focusedObject != null &&
+                focusedObject.getId() == wrapper.getId()) {
+            setFocusedObject(wrapper);
+        }
+        map.updateEntity(wrapper);
+        mainView.updateGameObject(wrapper);
+    }
+
     public static EditorObject getObjectById(int id) {
         if (focusedObject != null
                 && id == focusedObject.getId()) {
@@ -104,8 +113,8 @@ public final class EditorState {
         }
     }
 
-    public static EditorObject incrementFocusedObject() {
-        toolbarObjects.put(currentType, new EditorObject<>(toolbarObjects.get(currentType).instance.copy()));
+    public static EditorObject incrementFocusedObject(Config config) {
+        toolbarObjects.put(currentType, new EditorObject(toolbarObjects.get(currentType), config));
         focusedObject = toolbarObjects.get(currentType);
         return focusedObject;
     }
@@ -142,7 +151,10 @@ public final class EditorState {
     }
     public static void setType(ObjectType newType) {
         currentType = newType;
-        focusedObject = toolbarObjects.get(currentType);
+
+        if (currentMode == ModeType.CREATE) {
+            focusedObject = toolbarObjects.get(currentType);
+        }
     }
 
 
@@ -151,27 +163,27 @@ public final class EditorState {
             case SET_OBJECT_POSITION:
                 Actions.setObjectPosition(
                         sidePanel,
-                        mainView,
                         map,
                         command.objectId,
-                        (Vector2)command.newValue);
+                        (Vector2)command.newValue,
+                        command.isOriginUI);
                 break;
             case SET_OBJECT_COLOUR:
                 Actions.setObjectColour(
                         sidePanel,
-                        mainView,
                         map,
                         command.objectId,
-                        (Color)command.newValue);
+                        (Color)command.newValue,
+                        command.isOriginUI);
                 break;
             case SET_OBJECT_TEXTURE:
                 Actions.setObjectTexture(
                         sidePanel,
-                        mainView,
                         map,
                         command.objectId,
                         (String)command.newValue,
-                        gameConfig);
+                        gameConfig,
+                        command.isOriginUI);
                 break;
             case CREATE_OBJECT:
                 Actions.createObject(

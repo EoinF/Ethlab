@@ -10,9 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class CreateModeTable extends Table {
 
@@ -116,7 +122,6 @@ public class CreateModeTable extends Table {
         if (objectClass == Entity.class) {
             entityEditorTable.setEntity((Entity) wrapper.instance, wrapper.getId());
         }
-
     }
 
     public void setObjectPosition(Vector2 position) {

@@ -24,6 +24,10 @@ public class EditorObject<T extends GameObject> {
         this.isAutoBoundingBox = false;
     }
 
+    public EditorObject(EditorObject<T> objectToCopy, Config config) {
+        this((T)objectToCopy.instance.copy(), objectToCopy.isAutoBoundingBox, config);
+    }
+
     public EditorObject(T gameObject) {
         this();
 

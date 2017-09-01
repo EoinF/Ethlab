@@ -13,36 +13,44 @@ import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 
 public class Actions {
 
-    public static void setObjectPosition(SidePanel sidePanel, MainView mainView, EditorMap map, int id, Vector2 position) {
+    public static void setObjectPosition(SidePanel sidePanel, EditorMap map, int id, Vector2 position,
+                                         boolean isOriginUI) {
         EditorObject wrapper = map.getObjectById(id);
         GameObject gameObject = wrapper.instance;
 
-        gameObject.position = position;
+        wrapper.setPosition(position);
 
-        map.updateEntity(wrapper);
-        sidePanel.getCreateModeTable().setObjectPosition(gameObject.position);
-        mainView.updateGameObject(wrapper);
+        EditorState.updateObject(wrapper);
+        if (!isOriginUI) {
+            sidePanel.getCreateModeTable().setObjectPosition(gameObject.position);
+        }
     }
 
-    public static void setObjectColour(SidePanel sidePanel, MainView mainView, EditorMap map, int id, Color newColour) {
+    public static void setObjectColour(SidePanel sidePanel, EditorMap map, int id, Color newColour,
+                                       boolean isOriginUI) {
         EditorObject wrapper = map.getObjectById(id);
         GameObject gameObject = wrapper.instance;
 
-        gameObject.colour = newColour;
+        wrapper.setColour(newColour);
 
-        map.updateEntity(wrapper);
-        sidePanel.getCreateModeTable().setObjectColour(gameObject.colour);
-        mainView.updateGameObject(wrapper);
+        EditorState.updateObject(wrapper);
+        if (!isOriginUI) {
+            sidePanel.getCreateModeTable().setObjectColour(gameObject.colour);
+        }
     }
 
-    public static void setObjectTexture(SidePanel sidePanel, MainView mainView, EditorMap map, int id, String textureName, Config config) {
+    public static void setObjectTexture(SidePanel sidePanel, EditorMap map, int id, String textureName, Config config,
+                                        boolean isOriginUI) {
         EditorObject wrapper = map.getObjectById(id);
         GameObject gameObject = wrapper.instance;
 
         wrapper.setTexture(textureName, config);
-        map.updateEntity(wrapper);
-        sidePanel.getCreateModeTable().setObjectTexture(gameObject.textureName);
-        mainView.updateGameObject(wrapper);
+
+        EditorState.updateObject(wrapper);
+
+        if (!isOriginUI) {
+            sidePanel.getCreateModeTable().setObjectTexture(gameObject.textureName);
+        }
     }
 
     public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, EditorObject entity) {
