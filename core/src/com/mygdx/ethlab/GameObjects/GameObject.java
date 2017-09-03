@@ -1,11 +1,7 @@
 package com.mygdx.ethlab.GameObjects;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.StateManager.EditorState;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class GameObject {
@@ -14,7 +10,13 @@ public abstract class GameObject {
 
     public String textureName;
     public Color colour;
-    public Vector2 position;
+    private Vector2 position;
+    public Vector2 getPosition() {
+        return this.position;
+    }
+    public void setPosition(Vector2 position) {
+        this.position = position;
+    }
 
     public GameObject() {
         textureName = null;
@@ -33,7 +35,7 @@ public abstract class GameObject {
 
         if (objectClass == Entity.class) {
             Entity entity = (Entity)this;
-            return new Entity(entity.textureName, entity.colour, entity.position, entity.boundingBox, entity.mass,
+            return new Entity(entity.textureName, entity.colour, entity.getPosition(), entity.boundingBox, entity.mass,
                     entity.health, entity.ai);
         }
         else if (objectClass == Item.class) {

@@ -2,7 +2,7 @@ package com.mygdx.ethlab.StateManager.enums;
 
 public enum ModeType {
     CREATE,
-    CREATED,
+    ADD_VERTICES,
     EDIT,
     TRIGGERS
 }

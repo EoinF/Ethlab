@@ -36,8 +36,7 @@ public final class EditorState {
     }
 
     public static void setFocusedObject(int id) {
-        focusedObject = getObjectById(id);
-        mainView.setFocusedObject(focusedObject);
+        setFocusedObject(getObjectById(id));
     }
 
     public static boolean isFocused(int id) {
@@ -142,11 +141,17 @@ public final class EditorState {
     public static void setMode(ModeType newMode) {
         currentMode = newMode;
 
-        if (newMode == ModeType.CREATE) {
-            setFocusedObject(toolbarObjects.get(currentType));
-        }
-        else if (newMode == ModeType.EDIT) {
-            setFocusedObject(null);
+        switch (newMode) {
+            case CREATE:
+                setFocusedObject(toolbarObjects.get(currentType));
+                break;
+            case ADD_VERTICES:
+                break;
+            case EDIT:
+                setFocusedObject(null);
+                break;
+            case TRIGGERS:
+                break;
         }
     }
 
@@ -157,7 +162,7 @@ public final class EditorState {
         currentType = newType;
 
         if (currentMode == ModeType.CREATE) {
-            focusedObject = toolbarObjects.get(currentType);
+            setFocusedObject(toolbarObjects.get(currentType));
         }
     }
 

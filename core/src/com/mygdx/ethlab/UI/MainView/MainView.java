@@ -35,12 +35,16 @@ import javafx.scene.input.MouseButton;
 public class MainView {
 
     static final float DEFAULT_CAMERA_SPEED = 5f;
+    static final float SHAPE_COMPLETION_THRESHOLD = 5f;
     private PolygonSpriteBatch polyBatch;
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
     private static final Color opaqueColour = new Color(1, 1, 1, 0.5f);
 
     private boolean isFocused;
+    public boolean getIsFocused() {
+        return this.isFocused;
+    }
     public void setIsFocused(boolean isFocused) {
         if (this.isFocused != isFocused) {
             this.isFocused = isFocused;
@@ -101,6 +105,8 @@ public class MainView {
                     actCreateMode(x, y, button);
                 } else if (EditorState.isMode(ModeType.EDIT)) {
                     actEditMode(x, y, button);
+                } else if (EditorState.isMode(ModeType.ADD_VERTICES)) {
+                    actAddVerticesMode(x, y, button);
                 }
                 return true;
             }
@@ -120,21 +126,57 @@ public class MainView {
     private void actCreateMode(float x, float y, int mouseButton) {
         if (isFocused) {
             EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
-            Entity focusedEntity = ((Entity) focusedObject.instance);
-
             Vector3 mousePositionInWorld = camera.unproject(new Vector3(x, rootActor.getHeight() - y, 0));
 
-            focusedObject.instance.position = new Vector2(
-                    mousePositionInWorld.x - focusedEntity.boundingBox.getWidth() / 2,
-                    mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
-            );
-
             if (mouseButton == Input.Buttons.LEFT) {
+                switch(EditorState.getType()) {
+                    case ENTITY:
+                        Entity focusedEntity = ((Entity) focusedObject.instance);
+                        focusedObject.setPosition(new Vector2(
+                                mousePositionInWorld.x - focusedEntity.boundingBox.getWidth() / 2,
+                                mousePositionInWorld.y - focusedEntity.boundingBox.getHeight() / 2
+                        ));
+                        EditorState.performAction(
+                                CommandFactory.addNewObject(focusedObjectID, focusedObject, false), config
+                        );
+
+                        EditorObject updatedWrapper = EditorState.incrementFocusedObject(config);
+                        setFocusedObject(updatedWrapper);
+                        break;
+                    case TERRAIN:
+                        EditorState.setMode(ModeType.ADD_VERTICES);
+                        focusedObject.setPosition(new Vector2(mousePositionInWorld.x, mousePositionInWorld.y));
+                        break;
+                }
+            }
+        }
+    }
+
+    private void actAddVerticesMode(float x, float y, int mouseButton) {
+        if (isFocused) {
+            Vector3 mousePositionInWorld = camera.unproject(new Vector3(x, rootActor.getHeight() - y, 0));
+
+            EditorObject focusedObject = EditorState.getObjectById(focusedObjectID);
+            TerrainShape shape = (TerrainShape) focusedObject.instance;
+            Vector2 firstPoint = shape.getPosition();
+
+            // Check if we are finishing the shape by connecting the first and last point
+            // and also that there are at least 3 points already
+            if (Vector2.dst(mousePositionInWorld.x, mousePositionInWorld.y, firstPoint.x, firstPoint.y)
+                    < SHAPE_COMPLETION_THRESHOLD &&
+                    shape.getPoints().length > 2) {
+                shape.addPoint(mousePositionInWorld.x, mousePositionInWorld.y);
                 EditorState.performAction(
                         CommandFactory.addNewObject(focusedObjectID, focusedObject, false), config
                 );
                 EditorObject updatedWrapper = EditorState.incrementFocusedObject(config);
+                TerrainShape updatedShape = (TerrainShape)updatedWrapper.instance;
+                updatedShape.setPoints(new float[0]);
                 setFocusedObject(updatedWrapper);
+
+                EditorState.setMode(ModeType.CREATE);
+            } else {
+                shape.addPoint(mousePositionInWorld.x, mousePositionInWorld.y);
             }
         }
     }
@@ -179,7 +221,7 @@ public class MainView {
             TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
 
             focusedObjectSprite = new Sprite(reg);
-            focusedObjectSprite.setPosition(gameObject.position.x, gameObject.position.y);
+            focusedObjectSprite.setPosition(gameObject.getPosition().x, gameObject.getPosition().y);
             focusedObjectSprite.setColor(gameObject.colour);
             focusedObjectID = wrapper.getId();
 
@@ -199,7 +241,7 @@ public class MainView {
     private Image createGameObjectImage(GameObject gameObject) {
         TextureRegion reg = config.getTexture(gameObject.textureName, gameObject.getClass());
         Image image = new Image(new Sprite(reg));
-        image.setPosition(gameObject.position.x, gameObject.position.y);
+        image.setPosition(gameObject.getPosition().x, gameObject.getPosition().y);
         image.setColor(gameObject.colour);
         return image;
     }
@@ -213,10 +255,14 @@ public class MainView {
     }
 
     public void addGameObject(EditorObject wrapper) {
-        Image gameObjectImage = createGameObjectImage(wrapper.instance);
-        gameObjectMap.put(wrapper.getId(), gameObjectImage);
-        gameStage.addActor(gameObjectImage);
-        spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
+        if (wrapper.instance instanceof TerrainShape) {
+            addShape(wrapper);
+        } else {
+            Image gameObjectImage = createGameObjectImage(wrapper.instance);
+            gameObjectMap.put(wrapper.getId(), gameObjectImage);
+            gameStage.addActor(gameObjectImage);
+            spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
+        }
     }
 
     public void updateGameObject(EditorObject wrapper) {
@@ -229,8 +275,9 @@ public class MainView {
     }
 
     public void removeGameObject(EditorObject wrapper) {
-        // Remove the object from the map and then from the game stage
-        gameObjectMap.remove(wrapper.getId()).remove();
+        gameObjectMap
+                .remove(wrapper.getId()) // Remove the object from the main view
+                .remove(); // Remove the object from the game stage
     }
 
     public void setShapes(List<EditorObject<TerrainShape>> gameShapes) {
@@ -290,6 +337,78 @@ public class MainView {
         if (focusedObjectPosition != null) {
             drawBoundingBox(focusedObjectPosition.x, focusedObjectPosition.y, focusedObjectBoundingBox);
         }
+        if (EditorState.isMode(ModeType.ADD_VERTICES)) {
+            Vector2 mousePosition = null;
+            if (rootActor.hit(Gdx.input.getX(), Gdx.input.getY(), true) != null) {
+                // Get the world coordinates of the cursor
+                Vector3 mousePosition3d = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+                mousePosition = new Vector2(mousePosition3d.x, mousePosition3d.y);
+            }
+            drawVertices((TerrainShape) EditorState.getFocusedObject().instance, mousePosition);
+        }
+    }
+
+    private void drawVertices(TerrainShape shape, Vector2 mousePosition) throws Exception {
+        if (spriteBatch.isDrawing()) {
+            spriteBatch.end();
+            throw new Exception("Attempted to interrupt drawing of sprite batch. " +
+                    "Make sure to call end() before starting a new batch");
+        }
+
+        Color generatedColour = generateColour().cpy();
+        generatedColour.a = 0.5f;
+        float circleSize = 3;
+
+        /*
+            Add the mouse position to the list of shapes if applicable
+         */
+        float[] points = shape.getPoints();
+        if (mousePosition != null) {
+            float[] newPoints = new float[points.length + 2];
+            System.arraycopy(points, 0, newPoints, 0, points.length);
+            newPoints[newPoints.length - 2] = mousePosition.x;
+            newPoints[newPoints.length - 1] = mousePosition.y;
+            points = newPoints;
+        }
+
+        /*
+            Draw each of the vertices
+         */
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setColor(generatedColour);
+
+        for (int i = 0; i < points.length / 2; i++) {
+            // The last point is a brighter colour
+            if (i == points.length / 2) {
+                generatedColour.a = 1;
+                circleSize = 5;
+                shapeRenderer.setColor(generatedColour);
+            }
+            shapeRenderer.circle(points[i*2], points[i*2 + 1], circleSize);
+        }
+
+        shapeRenderer.end();
+
+        /*
+            Draw the lines between each vertex
+         */
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setColor(generatedColour);
+
+        for (int i = 0; i < points.length / 2 - 1; i++) {
+            // The last line is a brighter colour
+            if (i == points.length / 2) {
+                generatedColour.a = 1;
+                shapeRenderer.setColor(generatedColour);
+            }
+            shapeRenderer.line(points[i*2], points[i*2 + 1], points[i*2 + 2], points[i*2 + 3]);
+        }
+
+        shapeRenderer.end();
     }
 
     private void drawBoundingBox(float positionX, float positionY, Rectangle boundingBox) throws Exception {

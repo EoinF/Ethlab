@@ -35,7 +35,7 @@ public class Entity extends GameObject  implements Cloneable {
             super.clone();
         } catch(CloneNotSupportedException e){}
 
-        return new Entity(this.textureName, this.colour, this.position,
+        return new Entity(this.textureName, this.colour, this.getPosition(),
                 this.boundingBox, this.mass, this.health, this.ai);
     }
 }

@@ -34,7 +34,7 @@ public abstract class ObjectEditorTable extends Table {
 
     public void setObject(GameObject newValues, int id) {
         this.id = id;
-        setPosition(newValues.position);
+        setPosition(newValues.getPosition());
         colourField.setValues(newValues.colour);
         setTexture(newValues.textureName, newValues.getClass());
     }
@@ -66,7 +66,7 @@ public abstract class ObjectEditorTable extends Table {
         textureField = addTexturePicker("Texture: ",
                 config.getTextureNames(gameObject.getClass()), gameObject.getClass(), gameObject.textureName, skin);
         colourField = addColourPicker("Colour: ", gameObject.colour, skin);
-        positionFields = addCoordinatePicker("Position: ", gameObject.position, skin);
+        positionFields = addCoordinatePicker("Position: ", gameObject.getPosition(), skin);
 
         addTextFieldCommitInputHandler(positionFields[0], field -> {
             float newX = getFloatFromTextField(field);
@@ -113,7 +113,8 @@ public abstract class ObjectEditorTable extends Table {
     }
 
     private void updatePosition(int objectId, Vector2 newPosition) {
-        if (EditorState.isMode(ModeType.CREATE)) {
+        if (EditorState.isMode(ModeType.CREATE)
+                || EditorState.isMode(ModeType.ADD_VERTICES)) {
             EditorObject focusedObject = EditorState.getFocusedObject();
             focusedObject.setPosition(newPosition);
             EditorState.setFocusedObject(focusedObject);

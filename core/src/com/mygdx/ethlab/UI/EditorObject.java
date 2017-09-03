@@ -63,7 +63,7 @@ public class EditorObject<T extends GameObject> {
     }
 
     public void setPosition(Vector2 position) {
-        this.instance.position = position;
+        this.instance.setPosition(position);
     }
 
     public void setTexture(String textureName, Config config) {

@@ -2,6 +2,7 @@ package com.mygdx.ethlab.GameObjects;
 
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.mygdx.ethlab.UI.SidePanel.IShape2D;
@@ -10,6 +11,26 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
     private float points[];
     private PolygonSprite poly;
 
+    /**
+     * Set the position of the shape ( Always based on the first vertex )
+     * This also offsets the position of every other point by the change in the first vertex
+     * @param newPosition The new starting vertex position of the shape
+     */
+    @Override
+    public void setPosition(Vector2 newPosition) {
+        super.setPosition(newPosition);
+
+        if (points.length == 0) {
+            setPoints(new float[] { newPosition.x, newPosition.y });
+        } else {
+            Vector2 diff = newPosition.sub(new Vector2(this.points[0], this.points[1]));
+            for (int i = 0; i < points.length / 2; i++) {
+                points[i*2] += diff.x;
+                points[i*2 + 1] += diff.y;
+            }
+        }
+    }
+
     public float[] getPoints() {
         return points;
     }
@@ -17,6 +38,14 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
     public void setPoints(float[] points) {
         this.points = points;
         this.poly = null;
+    }
+
+    public void addPoint(float x, float y) {
+        float[] newPoints = new float[this.points.length + 2];
+        System.arraycopy(this.points, 0, newPoints, 0, this.points.length);
+        newPoints[newPoints.length - 2] = x;
+        newPoints[newPoints.length - 1] = y;
+        this.setPoints(newPoints);
     }
 
     public PolygonSprite getSprite(TextureRegion textureRegion) {

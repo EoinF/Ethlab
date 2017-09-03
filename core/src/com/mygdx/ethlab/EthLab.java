@@ -158,11 +158,14 @@ public class EthLab extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(uiStage);
 		uiStage.addListener(new InputListener() {
 			public boolean scrolled(InputEvent event, float x, float y, int scrollDirection) {
-				OrthographicCamera orthographicCamera = (OrthographicCamera)camera;
-				orthographicCamera.zoom += scrollDirection * ZOOM_RATE;
-				orthographicCamera.zoom = Math.max(MIN_ZOOM, orthographicCamera.zoom);
-				orthographicCamera.zoom = Math.min(MAX_ZOOM, orthographicCamera.zoom);
-				return true;
+                if (mainView.getIsFocused()) {
+                    OrthographicCamera orthographicCamera = (OrthographicCamera) camera;
+                    orthographicCamera.zoom += scrollDirection * ZOOM_RATE;
+                    orthographicCamera.zoom = Math.max(MIN_ZOOM, orthographicCamera.zoom);
+                    orthographicCamera.zoom = Math.min(MAX_ZOOM, orthographicCamera.zoom);
+                    return true;
+                }
+                return false;
 			}
 		});
 

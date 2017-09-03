@@ -22,7 +22,7 @@ public class Actions {
 
         EditorState.updateObject(wrapper);
         if (!isOriginUI && EditorState.isFocused(wrapper.getId())) {
-            sidePanel.getCreateModeTable().setObjectPosition(gameObject.position);
+            sidePanel.getCreateModeTable().setObjectPosition(gameObject.getPosition());
         }
     }
 
@@ -53,13 +53,17 @@ public class Actions {
         }
     }
 
-    public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, EditorObject entity) {
-        map.addEntity(entity);
-        mainView.addGameObject(entity);
-        sidePanel.getCreateModeTable().setObjectPosition(entity.instance.position);
+    public static void createObject(SidePanel sidePanel, MainView mainView, EditorMap map, EditorObject wrapper) {
+        map.addObject(wrapper);
+        mainView.addGameObject(wrapper);
+        sidePanel.getCreateModeTable().setObject(wrapper);
     }
-    public static void removeObject(MainView mainView, EditorMap map, EditorObject entity) {
-        map.removeEntity(entity);
-        mainView.removeGameObject(entity);
+    public static void removeObject(MainView mainView, EditorMap map, EditorObject wrapper) {
+        map.removeEntity(wrapper);
+        mainView.removeGameObject(wrapper);
+        if (EditorState.isFocused(wrapper.getId())) {
+            EditorState.setFocusedObject(null);
+            EditorState.setEditModeObject(null);
+        }
     }
 }

@@ -45,15 +45,32 @@ public class EditorMap {
     }
     public Set<Integer> getIdList() { return editorObjectMap.keySet(); }
 
+    public void addObject(EditorObject wrapper) {
+        if (wrapper.instance instanceof Entity) {
+            addEntity(wrapper);
+        } else if(wrapper.instance instanceof TerrainShape) {
+            addShape(wrapper);
+        }
+    }
+
     /**
-     * Add an object to the map
+     * Add an entity to the map
      * @param wrapper The wrapped entity to add to the map
-     * @return The id of the added entity
      */
     public void addEntity(EditorObject wrapper) {
         entities.add(wrapper);
         addObjectToMap(wrapper);
     }
+
+    /**
+     * Add a shape to the map
+     * @param wrapper The wrapped shape to add to the map
+     */
+    public void addShape(EditorObject wrapper) {
+        shapes.add(wrapper);
+        addObjectToMap(wrapper);
+    }
+
     /**
      * Removes an object from the map
      * @param wrapper The wrapped entity to be removed to the map
