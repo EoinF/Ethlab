@@ -40,6 +40,10 @@ public final class EditorState {
         mainView.setFocusedObject(focusedObject);
     }
 
+    public static boolean isFocused(int id) {
+        return focusedObject.getId() == id;
+    }
+
     /*
         The three representations of the current map's state.
         Only 'map' is the source of truth. The others are just for rendering

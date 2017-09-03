@@ -21,7 +21,7 @@ public class Actions {
         wrapper.setPosition(position);
 
         EditorState.updateObject(wrapper);
-        if (!isOriginUI) {
+        if (!isOriginUI && EditorState.isFocused(wrapper.getId())) {
             sidePanel.getCreateModeTable().setObjectPosition(gameObject.position);
         }
     }
@@ -34,7 +34,7 @@ public class Actions {
         wrapper.setColour(newColour);
 
         EditorState.updateObject(wrapper);
-        if (!isOriginUI) {
+        if (!isOriginUI && EditorState.isFocused(wrapper.getId())) {
             sidePanel.getCreateModeTable().setObjectColour(gameObject.colour);
         }
     }
@@ -48,7 +48,7 @@ public class Actions {
 
         EditorState.updateObject(wrapper);
 
-        if (!isOriginUI) {
+        if (!isOriginUI && EditorState.isFocused(wrapper.getId())) {
             sidePanel.getCreateModeTable().setObjectTexture(gameObject.textureName);
         }
     }
