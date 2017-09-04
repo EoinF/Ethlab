@@ -74,7 +74,6 @@ public class EditorMap {
     /**
      * Removes an object from the map
      * @param wrapper The wrapped entity to be removed to the map
-     * @return The id of the added entity
      */
     public void removeEntity(EditorObject wrapper) {
         entities.remove(wrapper);
@@ -84,22 +83,32 @@ public class EditorMap {
     /**
      * Update an existing object in the map
      * @param wrapper The wrapped entity to be updated
-     * @return The id of the updated entity
      */
     public void updateEntity(EditorObject wrapper) {
-        EditorObject existingEntity = entities.stream().
-                filter(e -> e.getId() == wrapper.getId())
-                .findFirst()
-                .get();
+        if (getIdList().contains(wrapper.getId())) {
+            if (wrapper.instance instanceof Entity) {
+                EditorObject existingEntity = entities.stream().
+                        filter(e -> e.getId() == wrapper.getId())
+                        .findFirst()
+                        .get();
 
-        entities.set(entities.indexOf(existingEntity), wrapper);
-        addObjectToMap(wrapper);
+                entities.set(entities.indexOf(existingEntity), wrapper);
+                addObjectToMap(wrapper);
+            } else if (wrapper.instance instanceof TerrainShape) {
+                EditorObject existingShape = shapes.stream().
+                        filter(e -> e.getId() == wrapper.getId())
+                        .findFirst()
+                        .get();
+
+                shapes.set(shapes.indexOf(existingShape), wrapper);
+                addObjectToMap(wrapper);
+            }
+        }
     }
 
     /**
      * Add an object to the map
      * @param wrapper The wrapped item to add to the map
-     * @return The id of the added item
      */
     public void addItem(EditorObject wrapper) {
         items.add(wrapper);

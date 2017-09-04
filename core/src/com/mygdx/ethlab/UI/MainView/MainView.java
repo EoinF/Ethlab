@@ -146,6 +146,7 @@ public class MainView {
                     case TERRAIN:
                         EditorState.setMode(ModeType.ADD_VERTICES);
                         focusedObject.setPosition(new Vector2(mousePositionInWorld.x, mousePositionInWorld.y));
+                        EditorState.addShapeVertex(focusedObject);
                         break;
                 }
             }
@@ -165,7 +166,7 @@ public class MainView {
             if (Vector2.dst(mousePositionInWorld.x, mousePositionInWorld.y, firstPoint.x, firstPoint.y)
                     < SHAPE_COMPLETION_THRESHOLD &&
                     shape.getPoints().length > 2) {
-                shape.addPoint(mousePositionInWorld.x, mousePositionInWorld.y);
+                shape.addPoint(firstPoint.x, firstPoint.y);
                 EditorState.performAction(
                         CommandFactory.addNewObject(focusedObjectID, focusedObject, false), config
                 );
@@ -177,6 +178,7 @@ public class MainView {
                 EditorState.setMode(ModeType.CREATE);
             } else {
                 shape.addPoint(mousePositionInWorld.x, mousePositionInWorld.y);
+                EditorState.addShapeVertex(focusedObject);
             }
         }
     }

@@ -10,7 +10,7 @@ public abstract class GameObject {
 
     public String textureName;
     public Color colour;
-    private Vector2 position;
+    protected Vector2 position;
     public Vector2 getPosition() {
         return this.position;
     }

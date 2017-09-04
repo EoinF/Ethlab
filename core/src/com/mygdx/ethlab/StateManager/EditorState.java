@@ -81,7 +81,7 @@ public final class EditorState {
                         AIType.NONE), true, gameConfig));
                 put(ObjectType.ITEM, new EditorObject<>(new Item(), true, gameConfig));
                 put(ObjectType.PROP, new EditorObject<>(new Prop(), true, gameConfig));
-                put(ObjectType.TERRAIN, new EditorObject<>(new TerrainShape(), true, gameConfig));
+                put(ObjectType.TERRAIN, new EditorObject<>(new TerrainShape(gameConfig.getDefaultTerrainTexture()), true, gameConfig));
             }
         };
 
@@ -105,6 +105,10 @@ public final class EditorState {
         }
         map.updateEntity(wrapper);
         mainView.updateGameObject(wrapper);
+    }
+
+    public static void addShapeVertex(EditorObject wrapper) {
+        sidePanel.getCreateModeTable().setObject(wrapper);
     }
 
     public static EditorObject getObjectById(int id) {

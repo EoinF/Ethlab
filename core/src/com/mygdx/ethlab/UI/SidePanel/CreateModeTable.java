@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
@@ -121,6 +122,9 @@ public class CreateModeTable extends Table {
 
         if (objectClass == Entity.class) {
             entityEditorTable.setEntity((Entity) wrapper.instance, wrapper.getId());
+        }
+        if (objectClass == TerrainShape.class) {
+            terrainEditorTable.setShape((TerrainShape) wrapper.instance, wrapper.getId());
         }
     }
 

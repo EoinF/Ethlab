@@ -24,11 +24,23 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
             setPoints(new float[] { newPosition.x, newPosition.y });
         } else {
             Vector2 diff = newPosition.sub(new Vector2(this.points[0], this.points[1]));
-            for (int i = 0; i < points.length / 2; i++) {
-                points[i*2] += diff.x;
-                points[i*2 + 1] += diff.y;
+            for (int i = 0; i < this.points.length / 2; i++) {
+                this.points[i*2] += diff.x;
+                this.points[i*2 + 1] += diff.y;
             }
+            this.poly = null;
         }
+    }
+
+    public void setPoint(int index, float value) {
+        if (index == 0) {
+            this.position.x = value;
+        } else if (index == 1) {
+            this.position.y = value;
+        }
+
+        this.points[index] = value;
+        this.poly = null;
     }
 
     public float[] getPoints() {
@@ -67,6 +79,11 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
     //Default constructor for json deserialization
     public TerrainShape() {
         this.points = new float[0];
+    }
+
+    public TerrainShape(String textureName) {
+        this();
+        this.textureName = textureName;
     }
 
     public TerrainShape(String textureName, float points[]) {

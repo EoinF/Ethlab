@@ -8,11 +8,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
 public class PointsPicker extends Table {
     private Skin skin;
 
     // Need to declare this as it doesn't match with Input.Keys.ENTER or Input.Keys.CENTER
     private static int TEXTFIELD_ENTER = 13;
+
+    private BiConsumer<Integer, Float> onChangeListener;
 
     PointsPicker(float[] points, Skin skin) {
         align(Align.left);
@@ -22,27 +27,31 @@ public class PointsPicker extends Table {
                 .padTop(10);
 
         this.skin = skin;
+
         SidePanel.setBackgroundColour(this, Color.GRAY);
         updatePoints(points);
+
+        this.onChangeListener = (index, value) -> {};
     }
 
-    private void addPointControl(final float point) {
+    public void addChangeListener(BiConsumer<Integer, Float> consumer) {
+        this.onChangeListener = this.onChangeListener.andThen(consumer);
+    }
+
+    private void addPointControl(final int index, final float point) {
         final TextField xField = new TextField(String.valueOf(point), skin);
         add(xField).width(ObjectEditorTable.DEFAULT_COORD_COMPONENT_WIDTH);
 
         addTextFieldFocusLostHandler(xField);
-        xField.setTextFieldListener(new TextField.TextFieldListener() {
-            @Override
-            public void keyTyped(TextField field, char c) {
+        xField.setTextFieldListener((field, c) -> {
+            float newPoint = getFloatFromTextField(field);
 
-                float newPoint = getFloatFromTextField(field);
-
-                // Update this text field if enter is pressed
-                if (c == TEXTFIELD_ENTER) {
-                    System.out.println(newPoint);
-                    field.setText(String.valueOf(newPoint));
-                }
+            // Update this text field if enter is pressed
+            if (c == TEXTFIELD_ENTER) {
+                System.out.println(newPoint);
+                field.setText(String.valueOf(newPoint));
             }
+            onChangeListener.accept(index, newPoint);
         });
     }
 
@@ -60,12 +69,14 @@ public class PointsPicker extends Table {
         });
     }
 
-    void updatePoints(float[] points) {
+    public void updatePoints(float[] points) {
         clearChildren();
 
         for (int i = 0; i < points.length / 2; i++) {
-            addPointControl(i * 2);
-            addPointControl(i * 2 + 1);
+            int idX = i * 2;
+            int idY = i * 2 + 1;
+            addPointControl(idX, points[idX]);
+            addPointControl(idY, points[idY]);
             row();
         }
     }
