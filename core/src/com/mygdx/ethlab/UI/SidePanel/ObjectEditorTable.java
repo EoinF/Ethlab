@@ -21,6 +21,7 @@ public abstract class ObjectEditorTable extends Table {
     private TextField[] positionFields;
 
     private int id;
+    protected Table scrollTable;
 
     public static final float DEFAULT_COORD_COMPONENT_WIDTH = 70;
     public static final float DEFAULT_NUMBER_PICKER_WIDTH = 70;
@@ -29,6 +30,19 @@ public abstract class ObjectEditorTable extends Table {
 
     public ObjectEditorTable(Config config, Skin skin, GameObject gameObject) {
         this.config = config;
+        //
+        //Scroll table within sidepanel
+        //
+        scrollTable = new Table()
+                .align(Align.left | Align.top)
+                .padRight(10)
+                .padBottom(10);
+
+        ScrollPane scroll = new ScrollPane(scrollTable, skin);
+
+        add(scroll)
+                .expand().fill();
+
         init(skin, gameObject);
     }
 
@@ -59,7 +73,7 @@ public abstract class ObjectEditorTable extends Table {
      * @param skin The ui texture set to be used
      */
     private void init(Skin skin, GameObject gameObject) {
-        defaults()
+        scrollTable.defaults()
                 .padTop(4)
                 .padLeft(5);
 
@@ -128,11 +142,11 @@ public abstract class ObjectEditorTable extends Table {
     TexturePicker addTexturePicker(String attrName, String[] textureList, Class<?> objectType, String textureName, Skin skin) {
         TexturePicker texturePicker = new TexturePicker(attrName, textureName, textureList, objectType, config, skin);
 
-        add(texturePicker)
+        scrollTable.add(texturePicker)
                 .colspan(2)
                 .fillX()
                 .expandX();
-        row();
+        scrollTable.row();
         return texturePicker;
     }
 
@@ -146,8 +160,8 @@ public abstract class ObjectEditorTable extends Table {
 
         numberPickerTable.add(label).width(DEFAULT_LABEL_WIDTH);
         numberPickerTable.add(numberField).width(DEFAULT_NUMBER_PICKER_WIDTH);
-        add(numberPickerTable).fillX().expandX();
-        row();
+        scrollTable.add(numberPickerTable).fillX().expandX();
+        scrollTable.row();
         return numberField;
     }
 
@@ -158,10 +172,10 @@ public abstract class ObjectEditorTable extends Table {
                 .defaults()
                     .padRight(2);
 
-        add(colourPickerTable)
+        scrollTable.add(colourPickerTable)
                 .fillX()
                 .expandX();
-        row();
+        scrollTable.row();
         return colourPickerTable;
     }
 
@@ -181,10 +195,10 @@ public abstract class ObjectEditorTable extends Table {
         coordPickerTable.add(label);
         coordPickerTable.add(xField).width(DEFAULT_COORD_COMPONENT_WIDTH);
         coordPickerTable.add(yField).width(DEFAULT_COORD_COMPONENT_WIDTH);
-        add(coordPickerTable)
+        scrollTable.add(coordPickerTable)
                 .fillX()
                 .expandX();
-        row();
+        scrollTable.row();
 
         return new TextField[] { xField, yField };
     }
@@ -202,7 +216,7 @@ public abstract class ObjectEditorTable extends Table {
         selectionRow.add(label).width(DEFAULT_LABEL_WIDTH);
         selectionRow.add(selectWidget);
 
-        add(selectionRow)
+        scrollTable.add(selectionRow)
                 .align(Align.left);
         return selectWidget;
     }

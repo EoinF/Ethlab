@@ -48,13 +48,13 @@ public class TerrainEditorTable extends ObjectEditorTable {
 
     private PointsPicker addPointsPicker(String attrName, float[] points, Skin skin) {
         Label label = new Label(attrName, skin);
-        add(label).width(DEFAULT_LABEL_WIDTH);
-        row();
+        scrollTable.add(label).width(DEFAULT_LABEL_WIDTH);
+        scrollTable.row();
 
         PointsPicker picker = new PointsPicker(points, skin);
-        add(picker);
+        scrollTable.add(picker);
 
-        row();
+        scrollTable.row();
         return picker;
     }
 }

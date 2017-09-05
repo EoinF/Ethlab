@@ -45,14 +45,15 @@ public class SidePanel extends Table {
         row();
 
         //
-        //Scroll table within sidepanel
+        //Table that holds contents below toolbar
         //
-        Table scrolltable = new Table()
+        Table contentsTable = new Table(skin)
                 .align(Align.left | Align.top);
 
-        ScrollPane scroll = new ScrollPane(scrolltable, skin);
+        contentsTable.setHeight(this.getHeight());
+        contentsTable.setWidth(this.getWidth());
 
-        add(scroll)
+        add(contentsTable)
                 .pad(10)
                 .expand().fill();
 
@@ -94,7 +95,7 @@ public class SidePanel extends Table {
         toolbar.editModeButton.addListener(onClickModeButton);
         toolbar.triggerModeButton.addListener(onClickModeButton);
 
-        scrolltable.add(modeSelectStack)
+        contentsTable.add(modeSelectStack)
                 .expandX()
                 .fillX();
     }

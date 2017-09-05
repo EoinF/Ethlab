@@ -17,9 +17,6 @@ import com.mygdx.ethlab.StateManager.EditorState;
 
 import javax.swing.*;
 
-/**
- * Created by Eoin on 03/06/2015.
- */
 public class Toolbar extends Table{
     public Button createModeButton;
     public Button editModeButton;
