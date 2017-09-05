@@ -76,6 +76,9 @@ public class SidePanel extends Table {
                 triggerModeTable.setVisible(toolbar.triggerModeButton.isChecked());
 
                 if (toolbar.createModeButton.isChecked()) {
+
+
+
                     EditorState.setMode(ModeType.CREATE);
                 }
                 if (toolbar.editModeButton.isChecked()) {

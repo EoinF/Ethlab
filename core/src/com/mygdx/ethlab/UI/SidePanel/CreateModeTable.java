@@ -26,6 +26,11 @@ public class CreateModeTable extends Table {
     private EntityEditorTable entityEditorTable;
     private TerrainEditorTable terrainEditorTable;
 
+    private Button createEntityButton;
+    private Button createPropButton;
+    private Button createItemButton;
+    private Button createTerrainButton;
+
     public CreateModeTable(Config config, Skin skin) {
         //
         //Create a button set for choosing the type of object to create
@@ -35,25 +40,25 @@ public class CreateModeTable extends Table {
         //Entities (NPCs with AI)
         SpriteDrawable up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateEntityUp")));
         SpriteDrawable down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateEntityDown")));
-        final Button createEntityButton = new Button(new Button.ButtonStyle(up, down, down));
+        createEntityButton = new Button(new Button.ButtonStyle(up, down, down));
         modeRow.addActor(createEntityButton);
 
         //Props (Inanimate Objects affected by physics)
         up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreatePropUp")));
         down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreatePropDown")));
-        Button createPropButton = new Button(new Button.ButtonStyle(up, down, down));
+        createPropButton = new Button(new Button.ButtonStyle(up, down, down));
         modeRow.addActor(createPropButton);
 
         //Items (Objects that can be picked up or interacted with by Entities)
         up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateItemUp")));
         down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateItemDown")));
-        Button createItemButton = new Button(new Button.ButtonStyle(up, down, down));
+        createItemButton = new Button(new Button.ButtonStyle(up, down, down));
         modeRow.addActor(createItemButton);
 
         //Terrain (Shapes that make up the terrain of the map)
         up = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateTerrainUp")));
         down = new SpriteDrawable(new Sprite(config.atlas.findRegion("UI/SidePanel/CreateTerrainDown")));
-        final Button createTerrainButton = new Button(new Button.ButtonStyle(up, down, down));
+        createTerrainButton = new Button(new Button.ButtonStyle(up, down, down));
         modeRow.addActor(createTerrainButton);
 
         //Create a button group to only allow one tab selected at a time
@@ -115,6 +120,17 @@ public class CreateModeTable extends Table {
         add(editorStack)
                 .expandX()
                 .fillX();
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (visible) {
+            createEntityButton.setChecked(EditorState.isType(ObjectType.ENTITY));
+            createItemButton.setChecked(EditorState.isType(ObjectType.ITEM));
+            createPropButton.setChecked(EditorState.isType(ObjectType.PROP));
+            createTerrainButton.setChecked(EditorState.isType(ObjectType.TERRAIN));
+        }
     }
 
     public void setObject(EditorObject wrapper) {

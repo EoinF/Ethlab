@@ -72,6 +72,7 @@ public class EthLab extends ApplicationAdapter {
 			uiStage.draw();
 		} catch(Exception ex) {
 			System.out.println("Fatal: Exception while rendering: " + ex.getMessage());
+			throw new RuntimeException(ex);
 		}
 	}
 

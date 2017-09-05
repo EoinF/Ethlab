@@ -30,13 +30,24 @@ public final class EditorState {
         return focusedObject;
     }
 
-    public static void setFocusedObject(EditorObject editorObject) {
+    public static void setFocusedObject(EditorObject editorObject, boolean isOriginUI) {
         focusedObject = editorObject;
         mainView.setFocusedObject(editorObject);
+
+        if (!isOriginUI) {
+            switch (currentMode) {
+                case CREATE:
+                    sidePanel.getCreateModeTable().setObject(editorObject);
+                    break;
+                case EDIT:
+                    sidePanel.getEditModeTable().selectObject(editorObject);
+                    break;
+            }
+        }
     }
 
-    public static void setFocusedObject(int id) {
-        setFocusedObject(getObjectById(id));
+    public static void setFocusedObject(int id, boolean isOriginUI) {
+        setFocusedObject(getObjectById(id), isOriginUI);
     }
 
     public static boolean isFocused(int id) {
@@ -101,13 +112,19 @@ public final class EditorState {
     public static void updateObject(EditorObject wrapper) {
         if (focusedObject != null &&
                 focusedObject.getId() == wrapper.getId()) {
-            setFocusedObject(wrapper);
+            setFocusedObject(wrapper, false);
         }
         map.updateEntity(wrapper);
         mainView.updateGameObject(wrapper);
     }
 
     public static void addShapeVertex(EditorObject wrapper) {
+        sidePanel.getCreateModeTable().setObject(wrapper);
+    }
+
+    public static void cancelShapeCreation() {
+        EditorObject wrapper = toolbarObjects.get(ObjectType.TERRAIN);
+        ((TerrainShape)wrapper.instance).setPoints(null);
         sidePanel.getCreateModeTable().setObject(wrapper);
     }
 
@@ -125,16 +142,6 @@ public final class EditorState {
         focusedObject = toolbarObjects.get(currentType);
         return focusedObject;
     }
-
-    public static void setEditModeObject(int id) {
-        EditorObject wrapper = getObjectById(id);
-        sidePanel.getEditModeTable().selectObject(wrapper);
-    }
-
-    public static void setEditModeObject(EditorObject wrapper) {
-        sidePanel.getEditModeTable().selectObject(wrapper);
-    }
-
     //
     // Editor State interface
     //
@@ -143,30 +150,43 @@ public final class EditorState {
     }
 
     public static void setMode(ModeType newMode) {
-        currentMode = newMode;
+        if (currentMode != newMode) {
+            if (currentMode == ModeType.ADD_VERTICES) {
+                cancelShapeCreation();
+            }
+            currentMode = newMode;
 
-        switch (newMode) {
-            case CREATE:
-                setFocusedObject(toolbarObjects.get(currentType));
-                break;
-            case ADD_VERTICES:
-                break;
-            case EDIT:
-                setFocusedObject(null);
-                break;
-            case TRIGGERS:
-                break;
+            switch (newMode) {
+                case CREATE:
+                    setFocusedObject(toolbarObjects.get(currentType), false);
+                    break;
+                case ADD_VERTICES:
+                    break;
+                case EDIT:
+                    setFocusedObject(null, false);
+                    break;
+                case TRIGGERS:
+                    break;
+            }
         }
     }
 
+    public static boolean isType(ObjectType type) {
+        return currentType == type;
+    }
     public static ObjectType getType() {
         return currentType;
     }
     public static void setType(ObjectType newType) {
-        currentType = newType;
+        if (currentType != newType) {
+            currentType = newType;
 
-        if (currentMode == ModeType.CREATE) {
-            setFocusedObject(toolbarObjects.get(currentType));
+            if (currentMode == ModeType.CREATE) {
+                setFocusedObject(toolbarObjects.get(currentType), false);
+            } else if (currentMode == ModeType.ADD_VERTICES) {
+                cancelShapeCreation();
+                setMode(ModeType.CREATE);
+            }
         }
     }
 
@@ -209,7 +229,8 @@ public final class EditorState {
                 Actions.removeObject(
                         mainView,
                         map,
-                        (EditorObject) command.previousState);
+                        (EditorObject) command.previousState,
+                        command.isOriginUI);
                 break;
         }
 

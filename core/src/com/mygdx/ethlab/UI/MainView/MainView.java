@@ -196,8 +196,7 @@ public class MainView {
             for (Integer id : gameObjectMap.keySet()) {
                 if (gameObjectMap.get(id).equals(selectedActor)) {
                     if (mouseButton == Input.Buttons.LEFT) {
-                        EditorState.setFocusedObject(id);
-                        EditorState.setEditModeObject(id);
+                        EditorState.setFocusedObject(id, false);
                     } else if (mouseButton == Input.Buttons.RIGHT) {
                         EditorState.performAction(CommandFactory.removeObject(id, false), config);
                     }
@@ -205,8 +204,7 @@ public class MainView {
                 }
             }
         } else {
-            EditorState.setFocusedObject(null);
-            EditorState.setEditModeObject(null);
+            EditorState.setFocusedObject(null, false);
         }
     }
 

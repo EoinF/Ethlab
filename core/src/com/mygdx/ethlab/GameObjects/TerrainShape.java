@@ -48,7 +48,14 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
     }
 
     public void setPoints(float[] points) {
-        this.points = points;
+        if (points == null) {
+            this.points = new float[0];
+        } else {
+            this.points = points;
+            if (points.length > 1) {
+                this.position = new Vector2(points[0], points[1]);
+            }
+        }
         this.poly = null;
     }
 
@@ -88,7 +95,7 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
 
     public TerrainShape(String textureName, float points[]) {
         this.textureName = textureName;
-        this.points = points;
+        setPoints(points);
     }
 
     public TerrainShape copy() {

@@ -103,7 +103,7 @@ public abstract class ObjectEditorTable extends Table {
             if (EditorState.isMode(ModeType.CREATE)) {
                 EditorObject focusedObject = EditorState.getFocusedObject();
                 focusedObject.setColour(newColour);
-                EditorState.setFocusedObject(focusedObject);
+                EditorState.setFocusedObject(focusedObject, true);
             } else {
                 EditorState.performAction(
                         CommandFactory.setObjectColour(
@@ -116,7 +116,7 @@ public abstract class ObjectEditorTable extends Table {
             if (EditorState.isMode(ModeType.CREATE)) {
                 EditorObject focusedObject = EditorState.getFocusedObject();
                 focusedObject.setTexture(newTexture, config);
-                EditorState.setFocusedObject(focusedObject);
+                EditorState.setFocusedObject(focusedObject, true);
             } else {
                 EditorState.performAction(
                         CommandFactory.setObjectTexture(
@@ -131,7 +131,7 @@ public abstract class ObjectEditorTable extends Table {
                 || EditorState.isMode(ModeType.ADD_VERTICES)) {
             EditorObject focusedObject = EditorState.getFocusedObject();
             focusedObject.setPosition(newPosition);
-            EditorState.setFocusedObject(focusedObject);
+            EditorState.setFocusedObject(focusedObject, true);
         } else {
             EditorState.performAction(
                     CommandFactory.setObjectPosition(objectId, newPosition, true), config

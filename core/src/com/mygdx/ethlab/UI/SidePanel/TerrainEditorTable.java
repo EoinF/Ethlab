@@ -6,7 +6,6 @@ import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
-import com.sun.scenario.effect.impl.prism.ps.PPSOneSamplerPeer;
 
 public class TerrainEditorTable extends ObjectEditorTable {
 
@@ -38,7 +37,7 @@ public class TerrainEditorTable extends ObjectEditorTable {
         pointsPicker.addChangeListener((index, value) -> {
             EditorObject focusedObject = EditorState.getFocusedObject();
             ((TerrainShape)focusedObject.instance).setPoint(index, value);
-            EditorState.setFocusedObject(focusedObject);
+            EditorState.setFocusedObject(focusedObject, true);
 
             if (index == 0 || index == 1) {
                 this.setPosition(focusedObject.instance.getPosition());
