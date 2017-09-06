@@ -9,7 +9,7 @@ import com.mygdx.ethlab.UI.SidePanel.IShape2D;
 
 public class TerrainShape extends GameObject implements IShape2D, Json.Serializable {
     private float points[];
-    private PolygonSprite poly;
+    private PolygonRegion polyReg;
 
     /**
      * Set the position of the shape ( Always based on the first vertex )
@@ -28,9 +28,20 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
                 this.points[i*2] += diff.x;
                 this.points[i*2 + 1] += diff.y;
             }
-            this.poly = null;
+            this.polyReg = null;
         }
     }
+
+    @Override
+    public Vector2 getPosition() {
+        if (points.length > 1) {
+            return new Vector2(points[0], points[1]);
+        } else {
+            return super.getPosition();
+        }
+    }
+
+
 
     public void setPoint(int index, float value) {
         if (index == 0) {
@@ -40,7 +51,7 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
         }
 
         this.points[index] = value;
-        this.poly = null;
+        this.polyReg = null;
     }
 
     public float[] getPoints() {
@@ -56,7 +67,7 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
                 this.position = new Vector2(points[0], points[1]);
             }
         }
-        this.poly = null;
+        this.polyReg = null;
     }
 
     public void addPoint(float x, float y) {
@@ -67,20 +78,18 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
         this.setPoints(newPoints);
     }
 
-    public PolygonSprite getSprite(TextureRegion textureRegion) {
+    public PolygonRegion getRegion(TextureRegion textureRegion) {
         //Generate the sprite if it hasn't been generated yet
-        if (poly == null) {
+        if (polyReg == null) {
             EarClippingTriangulator triangulator = new EarClippingTriangulator();
 
-            PolygonRegion polyReg = new PolygonRegion(textureRegion,
+            polyReg = new PolygonRegion(textureRegion,
                     points,
                     triangulator.computeTriangles(points).toArray()
             );
-
-            poly = new PolygonSprite(polyReg);
-            poly.setOrigin(0, 0);
         }
-        return poly;
+
+        return polyReg;
     }
 
     //Default constructor for json deserialization
@@ -90,6 +99,9 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
 
     public TerrainShape(String textureName) {
         this();
+        if (this.points.length > 1) {
+            this.position = new Vector2(this.points[0], this.points[1]);
+        }
         this.textureName = textureName;
     }
 
@@ -103,9 +115,9 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
     }
 
     public void write(Json json) {
-        // Don't write the poly sprite, because this is derived from the points
+        // Don't write the poly region, because this is derived from the points
         TerrainShape withoutPolySprite = this.copy();
-        withoutPolySprite.poly = null;
+        withoutPolySprite.polyReg = null;
 
         json.writeFields(withoutPolySprite);
     }

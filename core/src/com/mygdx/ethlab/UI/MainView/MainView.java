@@ -1,5 +1,6 @@
 package com.mygdx.ethlab.UI.MainView;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -28,6 +30,7 @@ import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
 import javafx.scene.input.MouseButton;
+import net.dermetfan.gdx.scenes.scene2d.utils.PolygonRegionDrawable;
 
 /**
  The main view is the part of the screen which holds the game world and objects/entities (i.e. the game stage)
@@ -246,6 +249,33 @@ public class MainView {
         return image;
     }
 
+    private Image createShapeImage(TerrainShape shape) {
+        TextureRegion reg = config.getTexture(shape.textureName, shape.getClass());
+
+        PolygonRegionDrawable pReg = new PolygonRegionDrawable(shape.getRegion(reg));
+        Image image = new Image(pReg);
+
+        float[] points = shape.getPoints();
+
+        Vector2 originPosition = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+        for (int i = 0; i < points.length / 2; i++) {
+            if (points[i * 2] < originPosition.x) {
+                originPosition.x = points[i * 2];
+            }
+            if (points[i * 2 + 1] < originPosition.y) {
+                originPosition.y = points[i * 2 + 1];
+            }
+        }
+
+        Vector2 originOffset = originPosition.sub(shape.getPosition());
+
+        Vector2 imagePosition = shape.getPosition().add(originOffset);
+
+        image.setPosition(imagePosition.x, imagePosition.y);
+        image.setColor(shape.colour);
+        return image;
+    }
+
     public void setEntities(List<EditorObject<Entity>> entities) {
         entities.forEach(this::addGameObject);
     }
@@ -255,14 +285,15 @@ public class MainView {
     }
 
     public void addGameObject(EditorObject wrapper) {
+        Image gameObjectImage;
         if (wrapper.instance instanceof TerrainShape) {
-            addShape(wrapper);
+            gameObjectImage = createShapeImage((TerrainShape)wrapper.instance);
         } else {
-            Image gameObjectImage = createGameObjectImage(wrapper.instance);
-            gameObjectMap.put(wrapper.getId(), gameObjectImage);
-            gameStage.addActor(gameObjectImage);
-            spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
+            gameObjectImage = createGameObjectImage(wrapper.instance);
         }
+        gameObjectMap.put(wrapper.getId(), gameObjectImage);
+        gameStage.addActor(gameObjectImage);
+        spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
     }
 
     public void updateGameObject(EditorObject wrapper) {
@@ -281,26 +312,11 @@ public class MainView {
     }
 
     public void setShapes(List<EditorObject<TerrainShape>> gameShapes) {
-        gameShapes.forEach(this::addShape);
-    }
-
-    private void addShape(EditorObject wrapper) {
-        TerrainShape shape = (TerrainShape)wrapper.instance;
-        TextureRegion reg = config.getTexture(shape.textureName, shape.getClass());
-        gameShapeMap.put(wrapper.getId(), shape.getSprite(reg));
-        spriteColourMap.put(wrapper.getId(), wrapper.instance.colour);
+        gameShapes.forEach(this::addGameObject);
     }
 
     public void draw() throws Exception {
         gameStage.draw();
-
-        polyBatch.setProjectionMatrix(camera.combined);
-        polyBatch.begin();
-        for (PolygonSprite shapeSprite: gameShapeMap.values()) {
-            shapeSprite.draw(polyBatch);
-        }
-        polyBatch.end();
-
 
         spriteBatch.setProjectionMatrix(camera.combined);
         spriteBatch.begin();

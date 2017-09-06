@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
+import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.UI.EditorObject;
@@ -46,8 +47,10 @@ public class EditModeTable extends Table {
                 entityEditorTable.setVisible(true);
                 entityEditorTable.setEntity((Entity) wrapper.instance, wrapper.getId());
                 EditorState.setType(ObjectType.ENTITY);
-            } else {
-
+            } else if (objectClass == TerrainShape.class) {
+                terrainEditorTable.setVisible(true);
+                terrainEditorTable.setShape((TerrainShape) wrapper.instance, wrapper.getId());
+                EditorState.setType(ObjectType.TERRAIN);
             }
         }
     }
