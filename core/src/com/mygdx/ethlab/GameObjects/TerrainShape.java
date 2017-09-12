@@ -2,6 +2,7 @@ package com.mygdx.ethlab.GameObjects;
 
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -41,7 +42,28 @@ public class TerrainShape extends GameObject implements IShape2D, Json.Serializa
         }
     }
 
+    public Rectangle getBoundingBox() {
+        Vector2 bottomLeft = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
+        Vector2 topRight = new Vector2(Float.MIN_VALUE, Float.MIN_VALUE);
 
+        float currentX, currentY;
+        for (int i = 0; i < this.points.length / 2; i++) {
+            currentX = points[i * 2];
+            currentY = points[i * 2 + 1];
+            if (currentX < bottomLeft.x) {
+                bottomLeft.x = currentX;
+            } else if (currentX > topRight.x) {
+                topRight.x = currentX;
+            }
+            if (currentY < bottomLeft.y) {
+                bottomLeft.y = currentY;
+            } else if (currentY > topRight.y) {
+                topRight.y = currentY;
+            }
+        }
+        return new Rectangle(bottomLeft.x - position.x, bottomLeft.y - position.y,
+                topRight.x - bottomLeft.x, topRight.y - bottomLeft.y);
+    }
 
     public void setPoint(int index, float value) {
         if (index == 0) {

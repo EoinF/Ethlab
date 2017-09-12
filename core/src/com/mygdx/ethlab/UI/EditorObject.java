@@ -24,10 +24,6 @@ public class EditorObject<T extends GameObject> {
         this.isAutoBoundingBox = false;
     }
 
-    public EditorObject(EditorObject<T> objectToCopy, Config config) {
-        this((T)objectToCopy.instance.copy(), objectToCopy.isAutoBoundingBox, config);
-    }
-
     public EditorObject(T gameObject) {
         this();
 
@@ -42,11 +38,16 @@ public class EditorObject<T extends GameObject> {
         }
         else if (objectClass == TerrainShape.class) {
             this.name = "shape" + this.id;
+            this.isAutoBoundingBox = true;
         } else if (objectClass == Prop.class) {
             this.name = "prop" + this.id;
         } else {
             throw (new NotImplementedException());
         }
+    }
+
+    public EditorObject(EditorObject<T> objectToCopy, Config config) {
+        this((T)objectToCopy.instance.copy(), objectToCopy.isAutoBoundingBox, config);
     }
 
     public EditorObject(T gameObject, boolean isAutoBoundingBox, Config config) {
@@ -74,7 +75,7 @@ public class EditorObject<T extends GameObject> {
     }
 
     private void setAutoBoundingBox(Config config) {
-        if (this.instance.getClass() == Entity.class) {
+        if (this.instance instanceof Entity) {
             Entity entity = ((Entity)this.instance);
             entity.boundingBox = Utils.getBoundingBoxFromTexture(config.getTexture(entity.textureName, Entity.class));
         }

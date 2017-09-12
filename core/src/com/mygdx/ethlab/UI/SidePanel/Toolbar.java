@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.EditorMap;
 import com.mygdx.ethlab.StateManager.EditorState;
@@ -40,7 +41,6 @@ public class Toolbar extends Table{
                 .height(30);
 
         TextButton newMap = new TextButton("New", skin);
-        //newMap.setFillParent(true);
         TextButton loadMap = new TextButton("Load", skin);
         TextButton saveMap = new TextButton("Save", skin);
 
@@ -63,7 +63,7 @@ public class Toolbar extends Table{
                 int value = fileChooser.showSaveDialog(null);
                 if (value == JFileChooser.APPROVE_OPTION) {
                     EditorMap map = EditorState.getMap();
-                    Json json = new Json();
+                    Json json = new Json(JsonWriter.OutputType.json);
                     json.toJson(map, new FileHandle(fileChooser.getSelectedFile()));
                 }
             }

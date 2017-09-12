@@ -228,8 +228,11 @@ public class MainView {
             focusedObjectSprite.setColor(gameObject.colour);
             focusedObjectID = wrapper.getId();
 
-            if (gameObject.getClass() == Entity.class) {
+            if (gameObject instanceof Entity) {
                 focusedObjectBoundingBox = ((Entity) gameObject).boundingBox;
+            } else if (gameObject instanceof TerrainShape &&
+                    ((TerrainShape)gameObject).getPoints().length > 0 ) {
+                focusedObjectBoundingBox = ((TerrainShape) gameObject).getBoundingBox();
             } else {
                 float width = focusedObjectSprite.getWidth();
                 float height = focusedObjectSprite.getHeight();
