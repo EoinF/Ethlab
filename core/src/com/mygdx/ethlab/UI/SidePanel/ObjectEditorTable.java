@@ -10,6 +10,8 @@ import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
+import com.mygdx.ethlab.UI.SidePanel.Widgets.ColourPicker;
+import com.mygdx.ethlab.UI.SidePanel.Widgets.TexturePicker;
 
 import static com.mygdx.ethlab.UI.SidePanel.utils.*;
 

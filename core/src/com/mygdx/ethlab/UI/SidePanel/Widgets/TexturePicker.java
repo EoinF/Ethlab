@@ -1,4 +1,4 @@
-package com.mygdx.ethlab.UI.SidePanel;
+package com.mygdx.ethlab.UI.SidePanel.Widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
+import com.mygdx.ethlab.UI.SidePanel.ObjectEditorTable;
+import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 
 import java.util.function.Consumer;
 

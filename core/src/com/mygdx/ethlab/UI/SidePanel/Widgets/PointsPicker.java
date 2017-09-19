@@ -1,4 +1,4 @@
-package com.mygdx.ethlab.UI.SidePanel;
+package com.mygdx.ethlab.UI.SidePanel.Widgets;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
+import com.mygdx.ethlab.UI.SidePanel.ObjectEditorTable;
+import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -19,7 +21,7 @@ public class PointsPicker extends Table {
 
     private BiConsumer<Integer, Float> onChangeListener;
 
-    PointsPicker(float[] points, Skin skin) {
+    public PointsPicker(float[] points, Skin skin) {
         align(Align.left);
         defaults()
                 .padRight(2)
@@ -48,7 +50,6 @@ public class PointsPicker extends Table {
 
             // Update this text field if enter is pressed
             if (c == TEXTFIELD_ENTER) {
-                System.out.println(newPoint);
                 field.setText(String.valueOf(newPoint));
             }
             onChangeListener.accept(index, newPoint);

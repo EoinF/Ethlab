@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.AIType;
 import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.UI.EditorObject;
+import com.mygdx.ethlab.UI.SidePanel.Widgets.BoundingBoxPicker;
 
 public class EntityEditorTable extends ObjectEditorTable {
     private BoundingBoxPicker boundingBoxPicker;

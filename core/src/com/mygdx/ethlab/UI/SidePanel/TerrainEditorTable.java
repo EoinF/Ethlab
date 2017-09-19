@@ -6,6 +6,7 @@ import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
+import com.mygdx.ethlab.UI.SidePanel.Widgets.PointsPicker;
 
 public class TerrainEditorTable extends ObjectEditorTable {
 

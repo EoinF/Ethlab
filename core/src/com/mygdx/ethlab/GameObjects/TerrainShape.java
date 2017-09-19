@@ -6,9 +6,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
-import com.mygdx.ethlab.UI.SidePanel.IShape2D;
 
-public class TerrainShape extends GameObject implements IShape2D, Json.Serializable {
+public class TerrainShape extends GameObject implements Json.Serializable {
     private float points[];
     private PolygonRegion polyReg;
 
