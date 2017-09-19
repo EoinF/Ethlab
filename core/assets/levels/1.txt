@@ -6,12 +6,12 @@
                 "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
                 "textureName": "Bush",
                 "points": [
-                    50, 55,
-                    130, 130,
-                    210, 150,
-                    250, 100,
-                    150, 70,
-                    50, 55
+                    50, 105,
+                    130, 180,
+                    210, 200,
+                    250, 150,
+                    150, 120,
+                    50, 105
                 ]
             }
         },
@@ -21,9 +21,10 @@
                 "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
                 "textureName": "Bush",
                 "points": [
-                    300, 480,
-                    380, 480,
-                    380, 300
+                    100, 100,
+                    700, 100,
+                    670, 50,
+                    100, 100
                  ]
             }
         }
@@ -44,6 +45,21 @@
                     "b": 0.2,
                     "a": 1
                 }
+                "ai": "NONE"
+            }
+        }
+    ]
+    "items": [
+        {
+            "name": "spawn",
+            "instance": {
+                "class": "com.mygdx.ethlab.GameObjects.Item",
+                "textureName": "Spawn",
+                "position": {
+                    "x": 500,
+                    "y": 300
+                }
+                "type": "PLAYER_SPAWN",
             }
         }
     ]

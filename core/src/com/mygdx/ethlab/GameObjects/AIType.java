@@ -1,19 +1,14 @@
 package com.mygdx.ethlab.GameObjects;
 
-/**
- * Created by Eoin on 13/06/2015.
- */
 public enum AIType {
-    NONE,
-    SIMPLE;
+    NONE(0),
+    SIMPLE(1);
 
-    public static String[] getNames() {
-        AIType[] values = values();
-        String[] names = new String[values.length];
+    private final int value;
 
-        for (int i = 0; i < values.length; i++) {
-            names[i] = values[i].name();
-        }
-        return names;
+    AIType(final int newValue) {
+        value = newValue;
     }
+
+    public int getValue() { return value; }
 }

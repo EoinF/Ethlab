@@ -51,7 +51,8 @@ public class EntityEditorTable extends ObjectEditorTable {
         boundingBoxPicker = new BoundingBoxPicker("Bounds: ", entity.boundingBox, skin);
         massField = addFloatNumberPicker("Mass: ", entity.mass, skin);
         healthField = addFloatNumberPicker("Health: ", entity.health, skin);
-        aiField = addSelectBox("AI: ", entity.ai.name(), AIType.getNames(), skin);
+        aiField = addSelectBox("AI: ", entity.ai.name(),
+                com.mygdx.ethlab.GameObjects.utils.getEnumNames(AIType.class), skin);
     }
 
 

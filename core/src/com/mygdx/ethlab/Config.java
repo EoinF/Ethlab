@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Json;
 import com.mygdx.ethlab.GameObjects.Entity;
 import com.mygdx.ethlab.GameObjects.GameObject;
+import com.mygdx.ethlab.GameObjects.Item;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 
 import java.lang.reflect.Field;
@@ -28,6 +29,7 @@ public class Config {
 
     private String[] spriteNames;
     public String[] baseEntityNames;
+    public String[] baseItemNames;
 
     public TextureAtlas atlas;
 
@@ -49,7 +51,8 @@ public class Config {
         TextureAtlas.AtlasRegion[] atlasRegionList = config.atlas.getRegions().toArray(TextureAtlas.AtlasRegion.class);
         config.spriteNames = new String[atlasRegionList.length];
 
-        ArrayList<String> idleSpriteNamesList = new ArrayList<String>();
+        ArrayList<String> idleSpriteNamesList = new ArrayList<>();
+        ArrayList<String> activeSpriteNamesList = new ArrayList<>();
         for (int i = 0; i < atlasRegionList.length; i++) {
             String regionName = atlasRegionList[i].name;
             config.spriteNames[i] = regionName;
@@ -57,8 +60,13 @@ public class Config {
                 //Record this sprite, but remove the "/Idle" suffix and the "Entity/" prefix
                 idleSpriteNamesList.add(regionName.substring(7, regionName.length() - 5));
             }
+            if (regionName.endsWith("/Active")) {
+                //Record this sprite, but remove the "/Active" suffix and the "Item/" prefix
+                activeSpriteNamesList.add(regionName.substring(5, regionName.length() - 7));
+            }
         }
         config.baseEntityNames = idleSpriteNamesList.toArray(new String[idleSpriteNamesList.size()]);
+        config.baseItemNames = activeSpriteNamesList.toArray(new String[idleSpriteNamesList.size()]);
 
         //
         //Get the list of texture files and their names
@@ -99,6 +107,10 @@ public class Config {
                 textureName = baseEntityNames[0];
             }
             fullName = "Entity/" + textureName + "/Idle";
+            r = atlas.findRegion(fullName);
+        }
+        else if (type == Item.class) {
+            fullName = "Item/" + textureName + "/Active";
             r = atlas.findRegion(fullName);
         }
         else if (type == TerrainShape.class) {

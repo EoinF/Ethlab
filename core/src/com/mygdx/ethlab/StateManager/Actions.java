@@ -59,7 +59,7 @@ public class Actions {
         sidePanel.getCreateModeTable().setObject(wrapper);
     }
     public static void removeObject(MainView mainView, EditorMap map, EditorObject wrapper, boolean isOriginUI) {
-        map.removeEntity(wrapper);
+        map.removeObject(wrapper);
         mainView.removeGameObject(wrapper);
         if (EditorState.isFocused(wrapper.getId())) {
             EditorState.setFocusedObject(null, isOriginUI);

@@ -28,9 +28,14 @@ public class EditorMap {
         EditorMap map = json.fromJson(EditorMap.class, file);
 
         map.editorObjectMap = new HashMap<>();
-        for (EditorObject editorObject: map.entities) {
-            map.editorObjectMap.put(editorObject.getId(), editorObject);
-        }
+
+        map.entities.forEach(
+                e -> map.editorObjectMap.put(e.getId(), e));
+        map.items.forEach(
+                i -> map.editorObjectMap.put(i.getId(), i));
+        map.shapes.forEach(
+                s -> map.editorObjectMap.put(s.getId(), s));
+
         return map;
     }
 
@@ -71,12 +76,29 @@ public class EditorMap {
         addObjectToMap(wrapper);
     }
 
+    public void removeObject(EditorObject wrapper) {
+        if (wrapper.instance instanceof Entity) {
+            removeEntity(wrapper);
+        } else if(wrapper.instance instanceof TerrainShape) {
+            removeShape(wrapper);
+        }
+    }
+
     /**
      * Removes an object from the map
      * @param wrapper The wrapped entity to be removed to the map
      */
     public void removeEntity(EditorObject wrapper) {
         entities.remove(wrapper);
+        removeObjectFromMap(wrapper);
+    }
+
+    /**
+     * Removes an object from the map
+     * @param wrapper The wrapped entity to be removed to the map
+     */
+    public void removeShape(EditorObject wrapper) {
+        shapes.remove(wrapper);
         removeObjectFromMap(wrapper);
     }
 
