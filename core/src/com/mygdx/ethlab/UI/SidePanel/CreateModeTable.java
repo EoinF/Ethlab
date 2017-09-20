@@ -10,20 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.mygdx.ethlab.Config;
 import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.GameObject;
 import com.mygdx.ethlab.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.function.Consumer;
-
 public class CreateModeTable extends Table {
 
     private EntityEditorTable entityEditorTable;
+    private ItemEditorTable itemEditorTable;
+    private PropEditorTable propEditorTable;
     private TerrainEditorTable terrainEditorTable;
 
     private Button createEntityButton;
@@ -81,13 +77,24 @@ public class CreateModeTable extends Table {
         //
         entityEditorTable = new EntityEditorTable(config, skin);
 
-        terrainEditorTable = new TerrainEditorTable(config, skin);
+        // Create the other tables (Terrain, Item, Prop)
+        itemEditorTable = new ItemEditorTable(config, skin);
+        itemEditorTable
+                .align(Align.topLeft)
+                .setVisible(false);
+        propEditorTable = new PropEditorTable(config, skin);
+        propEditorTable
+                .align(Align.topLeft)
+                .setVisible(false);
 
+        terrainEditorTable = new TerrainEditorTable(config, skin);
         terrainEditorTable
                 .align(Align.topLeft)
                 .setVisible(false);
 
         editorStack.add(entityEditorTable);
+        editorStack.add(itemEditorTable);
+        editorStack.add(propEditorTable);
         editorStack.add(terrainEditorTable);
 
 
@@ -96,6 +103,8 @@ public class CreateModeTable extends Table {
         //
         Runnable updateTableVisibility = () -> {
             entityEditorTable.setVisible(createEntityButton.isChecked());
+            itemEditorTable.setVisible(createItemButton.isChecked());
+            propEditorTable.setVisible(createPropButton.isChecked());
             terrainEditorTable.setVisible(createTerrainButton.isChecked());
         };
 
@@ -105,6 +114,24 @@ public class CreateModeTable extends Table {
             public void changed(ChangeEvent event, Actor actor) {
                 updateTableVisibility.run();
                 EditorState.setType(ObjectType.ENTITY);
+            }
+        });
+
+        // Switch to Item
+        createItemButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateTableVisibility.run();
+                EditorState.setType(ObjectType.ITEM);
+            }
+        });
+
+        // Switch to Prop
+        createPropButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                updateTableVisibility.run();
+                EditorState.setType(ObjectType.PROP);
             }
         });
 

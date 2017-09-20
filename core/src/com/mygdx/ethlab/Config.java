@@ -66,7 +66,7 @@ public class Config {
             }
         }
         config.baseEntityNames = idleSpriteNamesList.toArray(new String[idleSpriteNamesList.size()]);
-        config.baseItemNames = activeSpriteNamesList.toArray(new String[idleSpriteNamesList.size()]);
+        config.baseItemNames = activeSpriteNamesList.toArray(new String[activeSpriteNamesList.size()]);
 
         //
         //Get the list of texture files and their names
@@ -146,6 +146,8 @@ public class Config {
     public String[] getTextureNames(Class<?> type) {
         if (type == Entity.class) {
             return baseEntityNames;
+        } else if (type == Item.class) {
+            return baseItemNames;
         } else if (type == TerrainShape.class) {
             return textureNames;
         } else {
