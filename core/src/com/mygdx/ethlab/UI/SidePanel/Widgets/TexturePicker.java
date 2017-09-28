@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.mygdx.ethlab.Config;
+import com.github.eoinf.ethanolshared.Config;
 import com.mygdx.ethlab.UI.SidePanel.ObjectEditorTable;
 import com.mygdx.ethlab.UI.SidePanel.SidePanel;
 

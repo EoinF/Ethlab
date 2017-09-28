@@ -2,9 +2,9 @@ package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.AIType;
-import com.mygdx.ethlab.GameObjects.Entity;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.AIType;
+import com.github.eoinf.ethanolshared.GameObjects.Entity;
 import com.mygdx.ethlab.UI.SidePanel.Widgets.BoundingBoxPicker;
 
 public class EntityEditorTable extends ObjectEditorTable {
@@ -52,7 +52,7 @@ public class EntityEditorTable extends ObjectEditorTable {
         massField = addFloatNumberPicker("Mass: ", entity.mass, skin);
         healthField = addFloatNumberPicker("Health: ", entity.health, skin);
         aiField = addSelectBox("AI: ", entity.ai.name(),
-                com.mygdx.ethlab.GameObjects.utils.getEnumNames(AIType.class), skin);
+                com.github.eoinf.ethanolshared.GameObjects.utils.getEnumNames(AIType.class), skin);
     }
 
 

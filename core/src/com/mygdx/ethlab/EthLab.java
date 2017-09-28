@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.github.eoinf.ethanolshared.Config;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.MainView.MainView;
 import com.mygdx.ethlab.UI.SidePanel.SidePanel;

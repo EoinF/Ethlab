@@ -2,8 +2,8 @@ package com.mygdx.ethlab.UI;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.*;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.*;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.Utils;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;

@@ -1,6 +1,5 @@
 package com.mygdx.ethlab.UI.MainView;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,16 +18,15 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.GameObject;
-import com.mygdx.ethlab.GameObjects.Item;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.Entity;
+import com.github.eoinf.ethanolshared.GameObjects.GameObject;
+import com.github.eoinf.ethanolshared.GameObjects.Item;
+import com.github.eoinf.ethanolshared.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.CommandFactory;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.UI.EditorObject;
-import javafx.scene.input.MouseButton;
 import net.dermetfan.gdx.scenes.scene2d.utils.PolygonRegionDrawable;
 
 /**

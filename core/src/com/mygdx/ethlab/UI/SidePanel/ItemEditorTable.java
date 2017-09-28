@@ -1,9 +1,9 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.Item;
-import com.mygdx.ethlab.GameObjects.ItemType;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.Item;
+import com.github.eoinf.ethanolshared.GameObjects.ItemType;
 
 public class ItemEditorTable extends ObjectEditorTable {
     private SelectBox<String> typeField;
@@ -29,6 +29,6 @@ public class ItemEditorTable extends ObjectEditorTable {
     private void init(Skin skin) {
         Item item = new Item(ItemType.PLAYER_SPAWN);
         typeField = addSelectBox("Type: ", item.type.name(),
-                com.mygdx.ethlab.GameObjects.utils.getEnumNames(ItemType.class), skin);
+                com.github.eoinf.ethanolshared.GameObjects.utils.getEnumNames(ItemType.class), skin);
     }
 }

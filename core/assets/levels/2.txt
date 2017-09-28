@@ -3,7 +3,7 @@
         {
             "name": "shape1",
             "instance": {
-                "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
+                "class": "com.github.eoinf.ethanolshared.GameObjects.TerrainShape",
                 "textureName": "Bush",
                 "points": [
                     150, 150,
@@ -20,7 +20,7 @@
         {
             "name": "abc",
             "instance": {
-                "class": "com.mygdx.ethlab.GameObjects.Entity",
+                "class": "com.github.eoinf.ethanolshared.GameObjects.Entity",
                 "textureName": "Mick",
                 "position": {
                     "x": 300,

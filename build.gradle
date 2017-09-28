@@ -47,6 +47,7 @@ project(":core") {
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.10.0"
+        compile "com.github.eoinf.ethanolshared:ethanolshared:1.5-SNAPSHOT"
     }
 }
 

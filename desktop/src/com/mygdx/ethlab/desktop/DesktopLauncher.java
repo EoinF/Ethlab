@@ -7,9 +7,6 @@ import com.mygdx.ethlab.EthLab;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		TexturePacker.Settings settings = new TexturePacker.Settings();
-		TexturePacker.process(settings, "../../images", "../../core/assets", "game");
-
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "EthLab";
 		config.width = 1280;

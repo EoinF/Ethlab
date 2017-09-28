@@ -2,11 +2,11 @@ package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.Item;
-import com.mygdx.ethlab.GameObjects.Prop;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.Entity;
+import com.github.eoinf.ethanolshared.GameObjects.Item;
+import com.github.eoinf.ethanolshared.GameObjects.Prop;
+import com.github.eoinf.ethanolshared.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.UI.EditorObject;
@@ -24,6 +24,7 @@ public class EditModeTable extends Table {
         //Create the table that controls entity attributes
         //
         entityEditorTable = new EntityEditorTable(config, skin);
+        entityEditorTable.setVisible(false);
 
         // Create the other tables (Terrain, Item, Prop)
         itemEditorTable = new ItemEditorTable(config, skin);

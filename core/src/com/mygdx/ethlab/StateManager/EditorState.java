@@ -3,9 +3,9 @@ package com.mygdx.ethlab.StateManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.Config;
+import com.github.eoinf.ethanolshared.Config;
 import com.mygdx.ethlab.EditorMap;
-import com.mygdx.ethlab.GameObjects.*;
+import com.github.eoinf.ethanolshared.GameObjects.*;
 import com.mygdx.ethlab.StateManager.enums.ModeType;
 import com.mygdx.ethlab.StateManager.enums.ObjectType;
 import com.mygdx.ethlab.UI.EditorObject;
@@ -90,7 +90,10 @@ public final class EditorState {
                         Entity.DEFAULT_MASS,
                         Entity.DEFAULT_HEALTH,
                         AIType.NONE), true, gameConfig));
-                put(ObjectType.ITEM, new EditorObject<>(new Item(), true, gameConfig));
+                put(ObjectType.ITEM, new EditorObject<>(new Item(ItemType.PLAYER_SPAWN,
+                        gameConfig.baseItemNames[0],
+                        Item.DEFAULT_COLOUR,
+                        Vector2.Zero), true, gameConfig));
                 put(ObjectType.PROP, new EditorObject<>(new Prop(), true, gameConfig));
                 put(ObjectType.TERRAIN, new EditorObject<>(new TerrainShape(gameConfig.getDefaultTerrainTexture()), true, gameConfig));
             }

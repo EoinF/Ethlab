@@ -3,7 +3,7 @@
         {
             "name": "shape1",
             "instance": {
-                "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
+                "class": "com.github.eoinf.ethanolshared.GameObjects.TerrainShape",
                 "textureName": "Bush",
                 "points": [
                     50, 105,
@@ -18,7 +18,7 @@
         {
             "name": "shape2",
             "instance": {
-                "class": "com.mygdx.ethlab.GameObjects.TerrainShape",
+                "class": "com.github.eoinf.ethanolshared.GameObjects.TerrainShape",
                 "textureName": "Bush",
                 "points": [
                     100, 100,
@@ -33,7 +33,7 @@
         {
             "name": "abc",
             "instance": {
-                "class": "com.mygdx.ethlab.GameObjects.Entity",
+                "class": "com.github.eoinf.ethanolshared.GameObjects.Entity",
                 "textureName": "Mick",
                 "position": {
                     "x": 300,
@@ -53,7 +53,7 @@
         {
             "name": "spawn",
             "instance": {
-                "class": "com.mygdx.ethlab.GameObjects.Item",
+                "class": "com.github.eoinf.ethanolshared.GameObjects.Item",
                 "textureName": "Spawn",
                 "position": {
                     "x": 500,

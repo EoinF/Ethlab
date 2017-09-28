@@ -1,12 +1,11 @@
 package com.mygdx.ethlab.StateManager;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.ethlab.Config;
+import com.github.eoinf.ethanolshared.Config;
 import com.mygdx.ethlab.EditorMap;
-import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.GameObject;
+import com.github.eoinf.ethanolshared.GameObjects.Entity;
+import com.github.eoinf.ethanolshared.GameObjects.GameObject;
 import com.mygdx.ethlab.UI.EditorObject;
 import com.mygdx.ethlab.UI.MainView.MainView;
 import com.mygdx.ethlab.UI.SidePanel.SidePanel;

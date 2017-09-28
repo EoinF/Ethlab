@@ -1,10 +1,10 @@
 package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.Item;
-import com.mygdx.ethlab.GameObjects.ItemType;
-import com.mygdx.ethlab.GameObjects.Prop;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.Item;
+import com.github.eoinf.ethanolshared.GameObjects.ItemType;
+import com.github.eoinf.ethanolshared.GameObjects.Prop;
 
 public class PropEditorTable extends ObjectEditorTable {
     public PropEditorTable(Config config, Skin skin) {

@@ -2,9 +2,9 @@ package com.mygdx.ethlab;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
-import com.mygdx.ethlab.GameObjects.Entity;
-import com.mygdx.ethlab.GameObjects.Item;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
+import com.github.eoinf.ethanolshared.GameObjects.Entity;
+import com.github.eoinf.ethanolshared.GameObjects.Item;
+import com.github.eoinf.ethanolshared.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
 

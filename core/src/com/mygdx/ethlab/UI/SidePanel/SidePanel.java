@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.*;
 import com.badlogic.gdx.utils.Align;
-import com.mygdx.ethlab.Config;
+import com.github.eoinf.ethanolshared.Config;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.StateManager.enums.ModeType;
 

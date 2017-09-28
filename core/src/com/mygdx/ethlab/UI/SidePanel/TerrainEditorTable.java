@@ -2,8 +2,8 @@ package com.mygdx.ethlab.UI.SidePanel;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygdx.ethlab.Config;
-import com.mygdx.ethlab.GameObjects.TerrainShape;
+import com.github.eoinf.ethanolshared.Config;
+import com.github.eoinf.ethanolshared.GameObjects.TerrainShape;
 import com.mygdx.ethlab.StateManager.EditorState;
 import com.mygdx.ethlab.UI.EditorObject;
 import com.mygdx.ethlab.UI.SidePanel.Widgets.PointsPicker;
